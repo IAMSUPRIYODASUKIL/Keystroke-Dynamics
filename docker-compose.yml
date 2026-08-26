@@ -1,0 +1,33 @@
+# Optional: a real PostgreSQL instance for a "production-like" run.
+#
+# The backend runs perfectly well without this — it defaults to a
+# zero-setup local SQLite file (see .env.example) so the project can be
+# graded/demoed on a machine with no Docker installed at all. Use this
+# compose file only if you specifically want to exercise the PostgreSQL
+# path described in the README/docs.
+#
+# Usage:
+#   docker compose up -d
+#   # then in .env: DATABASE_URL=postgresql+psycopg://keystroke_user:keystroke_pass@localhost:5432/keystroke_auth
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: keystroke_auth_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: keystroke_user
+      POSTGRES_PASSWORD: keystroke_pass
+      POSTGRES_DB: keystroke_auth
+    ports:
+      - "5432:5432"
+    volumes:
+      - keystroke_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keystroke_user -d keystroke_auth"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  keystroke_pg_data:
