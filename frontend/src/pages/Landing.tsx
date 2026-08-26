@@ -78,17 +78,17 @@ export function Landing() {
       {/* Hero Section */}
       <section className="relative pt-6 text-center sm:pt-12">
         {/* Academic Prototype Pill */}
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)]/80 px-4 py-1.5 text-xs font-semibold text-[var(--color-text)] shadow-sm backdrop-blur-xl transition-all hover:border-[var(--color-border-glow)]">
-          <span className="flex h-2 w-2 rounded-full bg-[var(--color-accent)] animate-pulse" />
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-(--color-border) bg-(--color-surface)/80 px-4 py-1.5 text-xs font-semibold text-(--color-text) shadow-sm backdrop-blur-xl transition-all hover:border-(--color-border-glow)">
+          <span className="flex h-2 w-2 rounded-full bg-(--color-accent) animate-pulse" />
           <span className="gradient-text-cyan font-mono uppercase tracking-wider">
             Academic Research Prototype (2026)
           </span>
-          <span className="text-[var(--color-border)]">|</span>
-          <span className="text-[var(--color-text-muted)] text-[11px]">Zero Simulated Data</span>
+          <span className="text-(--color-border)">|</span>
+          <span className="text-(--color-text-muted) text-[11px]">Zero Simulated Data</span>
         </div>
 
         {/* Hero Headline */}
-        <h1 className="mx-auto max-w-4xl text-4xl font-extrabold tracking-tight text-[var(--color-text)] sm:text-6xl sm:leading-[1.15]">
+        <h1 className="mx-auto max-w-4xl text-4xl font-extrabold tracking-tight text-(--color-text) sm:text-6xl sm:leading-[1.15]">
           Your password identifies{" "}
           <span className="gradient-text-cyan drop-shadow-sm">what you know</span>.
           <br />
@@ -97,7 +97,7 @@ export function Landing() {
         </h1>
 
         {/* Subtitle */}
-        <p className="mx-auto mt-6 max-w-2xl text-base text-[var(--color-text-muted)] sm:text-lg leading-relaxed">
+        <p className="mx-auto mt-6 max-w-2xl text-base text-(--color-text-muted) sm:text-lg leading-relaxed">
           An ultra-premium behavioral biometric authentication engine. Experience real-time machine learning
           scoring, dwell/flight time feature extraction, and fraud prevention running live in your browser.
         </p>
@@ -113,24 +113,24 @@ export function Landing() {
           </Link>
           <Link to="/login">
             <Button variant="secondary" size="lg" className="flex items-center gap-2 text-base px-6">
-              <Fingerprint size={18} className="text-[var(--color-accent)]" />
+              <Fingerprint size={18} className="text-(--color-accent)" />
               <span>Authenticate Sample</span>
             </Button>
           </Link>
         </div>
 
         {/* Feature Highlights Strip */}
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-3 text-xs text-[var(--color-text-muted)]">
-          <div className="flex items-center gap-1.5 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1 backdrop-blur-md">
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-3 text-xs text-(--color-text-muted)">
+          <div className="flex items-center gap-1.5 rounded-full border border-(--color-border) bg-(--color-surface) px-3 py-1 backdrop-blur-md">
             <CheckCircle2 size={13} className="text-emerald-400" />
             <span>Random Forest, SVM & Logistic Regression</span>
           </div>
-          <div className="flex items-center gap-1.5 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1 backdrop-blur-md">
+          <div className="flex items-center gap-1.5 rounded-full border border-(--color-border) bg-(--color-surface) px-3 py-1 backdrop-blur-md">
             <Zap size={13} className="text-amber-400" />
             <span>60/120 FPS Real-Time Waveform</span>
           </div>
-          <div className="flex items-center gap-1.5 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1 backdrop-blur-md">
-            <Shield size={13} className="text-[var(--color-accent)]" />
+          <div className="flex items-center gap-1.5 rounded-full border border-(--color-border) bg-(--color-surface) px-3 py-1 backdrop-blur-md">
+            <Shield size={13} className="text-(--color-accent)" />
             <span>FAR & FRR Validated Metrics</span>
           </div>
         </div>
@@ -143,7 +143,7 @@ export function Landing() {
             variant="glow"
             title={
               <div className="flex items-center gap-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--color-accent)]/15 text-[var(--color-accent)]">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-(--color-accent)/15 text-(--color-accent)">
                   <Activity size={16} />
                 </span>
                 <span>Interactive Biometric Sandbox</span>
@@ -168,7 +168,7 @@ export function Landing() {
                   <p className="font-semibold text-emerald-400 text-sm">
                     Biometric telemetry captured successfully!
                   </p>
-                  <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+                  <p className="mt-1 text-xs text-(--color-text-muted)">
                     In actual production, this sample is scored through your trained 3-classifier ensemble to verify your unique cadence.
                   </p>
                 </div>
@@ -184,10 +184,10 @@ export function Landing() {
       {/* How it works 5-step Pipeline */}
       <section>
         <div className="mb-10 text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-[var(--color-text)] sm:text-3xl">
+          <h2 className="text-2xl font-bold tracking-tight text-(--color-text) sm:text-3xl">
             How Keystroke Biometrics Works
           </h2>
-          <p className="mt-2 text-sm text-[var(--color-text-muted)]">
+          <p className="mt-2 text-sm text-(--color-text-muted)">
             A 5-phase zero-trust pipeline from tactile keypress to multi-classifier consensus.
           </p>
         </div>
@@ -198,15 +198,15 @@ export function Landing() {
             return (
               <Card key={step.step} className="group relative text-sm hover:scale-[1.02] transition-transform duration-200">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs font-bold text-[var(--color-accent)] opacity-80">
+                  <span className="font-mono text-xs font-bold text-(--color-accent) opacity-80">
                     {step.step}
                   </span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--color-surface-raised)] border border-[var(--color-border)] text-[var(--color-accent)] group-hover:border-[var(--color-border-glow)] transition-colors">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-(--color-surface-raised) border border-(--color-border) text-(--color-accent) group-hover:border-(--color-border-glow) transition-colors">
                     <Icon size={16} />
                   </div>
                 </div>
-                <p className="mt-3 font-semibold text-[var(--color-text)] text-sm">{step.title}</p>
-                <p className="mt-2 text-xs leading-relaxed text-[var(--color-text-muted)]">{step.body}</p>
+                <p className="mt-3 font-semibold text-(--color-text) text-sm">{step.title}</p>
+                <p className="mt-2 text-xs leading-relaxed text-(--color-text-muted)">{step.body}</p>
               </Card>
             );
           })}
@@ -219,13 +219,13 @@ export function Landing() {
           title="Machine Learning, Honestly Explained"
           subtitle="Transparent evaluation, interpretable metrics, zero black-box magic"
         >
-          <p className="text-sm leading-relaxed text-[var(--color-text-secondary)]">
-            Three distinct interpretable classifiers — <strong className="text-[var(--color-text)]">Random Forest</strong>,{" "}
-            <strong className="text-[var(--color-text)]">Support Vector Machines (SVM)</strong>, and{" "}
-            <strong className="text-[var(--color-text)]">Logistic Regression</strong> — are trained on your enrolled timing samples against impostor cohorts.
+          <p className="text-sm leading-relaxed text-(--color-text-secondary)">
+            Three distinct interpretable classifiers — <strong className="text-(--color-text)">Random Forest</strong>,{" "}
+            <strong className="text-(--color-text)">Support Vector Machines (SVM)</strong>, and{" "}
+            <strong className="text-(--color-text)">Logistic Regression</strong> — are trained on your enrolled timing samples against impostor cohorts.
             Models are scored on real Cross-Validation Accuracy, Precision, Recall, F1, and the gold standard biometric metrics:
-            <strong className="text-[var(--color-accent)]"> False Acceptance Rate (FAR)</strong> and{" "}
-            <strong className="text-[var(--color-accent)]">False Rejection Rate (FRR)</strong>.
+            <strong className="text-(--color-accent)"> False Acceptance Rate (FAR)</strong> and{" "}
+            <strong className="text-(--color-accent)">False Rejection Rate (FRR)</strong>.
           </p>
         </Card>
 
@@ -233,9 +233,9 @@ export function Landing() {
           title="What This Is (and Isn't)"
           subtitle="Academic rigor and real-world behavioral limitations"
         >
-          <p className="text-sm leading-relaxed text-[var(--color-text-secondary)]">
+          <p className="text-sm leading-relaxed text-(--color-text-secondary)">
             Keystroke dynamics is a genuine, actively researched behavioral biometric — but it is an{" "}
-            <em className="text-[var(--color-text)]">additional 2FA defense layer</em>, not a standalone replacement for your password.
+            <em className="text-(--color-text)">additional 2FA defense layer</em>, not a standalone replacement for your password.
             Typing rhythms naturally fluctuate with fatigue, different mechanical keyboards, caffeine, or injury.
             This system transparently visualizes those confidence thresholds rather than concealing them.
           </p>

@@ -4,7 +4,7 @@ import { Shield, Sparkles } from "lucide-react";
 
 export function AppLayout() {
   return (
-    <div className="relative flex min-h-screen flex-col selection:bg-[var(--color-accent)]/20 selection:text-[var(--color-accent)]">
+    <div className="relative flex min-h-screen flex-col selection:bg-(--color-accent)/20 selection:text-(--color-accent)">
       {/* Dynamic Ambient Background Glow Mesh */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
         <div className="animate-ambient-1 absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle,rgba(0,242,254,0.12)_0%,rgba(0,242,254,0)_70%)] blur-3xl dark:opacity-100 opacity-60" />
@@ -24,10 +24,10 @@ export function AppLayout() {
       </main>
 
       {/* Luxury Specular Footer */}
-      <footer className="relative z-10 border-t border-[var(--color-border)] bg-[var(--color-surface)]/60 backdrop-blur-md px-4 py-8 text-center text-xs text-[var(--color-text-muted)]">
+      <footer className="relative z-10 border-t border-(--color-border) bg-(--color-surface)/60 backdrop-blur-md px-4 py-8 text-center text-xs text-(--color-text-muted)">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row sm:px-6">
-          <div className="flex items-center gap-2 font-medium text-[var(--color-text)]">
-            <span className="flex h-5 w-5 items-center justify-center rounded-md bg-[var(--color-accent)]/15 text-[var(--color-accent)]">
+          <div className="flex items-center gap-2 font-medium text-(--color-text)">
+            <span className="flex h-5 w-5 items-center justify-center rounded-md bg-(--color-accent)/15 text-(--color-accent)">
               <Shield size={12} />
             </span>
             <span className="tracking-wide">Keystroke Biometric Authentication</span>
@@ -37,9 +37,9 @@ export function AppLayout() {
             </span>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px] text-[var(--color-text-muted)]">
+          <div className="flex items-center gap-4 text-[11px] text-(--color-text-muted)">
             <span className="inline-flex items-center gap-1">
-              <Sparkles size={12} className="text-[var(--color-accent)]" />
+              <Sparkles size={12} className="text-(--color-accent)" />
               Academic Research Prototype (2026)
             </span>
             <span>·</span>

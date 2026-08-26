@@ -22,30 +22,30 @@ export function Card({
       className={clsx(
         "relative rounded-2xl border transition-all duration-300 backdrop-blur-xl p-5 sm:p-6",
         variant === "default" &&
-          "glass-card bg-[var(--color-surface)] border-[var(--color-border)] shadow-lg shadow-black/20",
+          "glass-card bg-(--color-surface) border-(--color-border) shadow-lg shadow-black/20",
         variant === "glow" &&
-          "bg-[var(--color-surface)] border-[var(--color-border-glow)] shadow-[0_0_30px_-5px_rgba(0,242,254,0.2)]",
+          "bg-(--color-surface) border-(--color-border-glow) shadow-[0_0_30px_-5px_rgba(0,242,254,0.2)]",
         variant === "interactive" &&
-          "glass-card bg-[var(--color-surface)] border-[var(--color-border)] hover:scale-[1.01] hover:border-[var(--color-border-glow)] cursor-pointer shadow-lg",
+          "glass-card bg-(--color-surface) border-(--color-border) hover:scale-[1.01] hover:border-(--color-border-glow) cursor-pointer shadow-lg",
         variant === "flat" &&
-          "bg-[var(--color-surface-raised)] border-[var(--color-border-subtle)] shadow-none",
+          "bg-(--color-surface-raised) border-(--color-border-subtle) shadow-none",
         className,
       )}
       {...rest}
     >
       {/* Specular Top Rim Lighting */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-border-glow)] to-transparent opacity-40 rounded-t-2xl" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-(--color-border-glow) to-transparent opacity-40 rounded-t-2xl" />
 
       {(title || actions) && (
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>
             {title && (
-              <h3 className="text-base font-semibold tracking-tight text-[var(--color-text)] sm:text-lg">
+              <h3 className="text-base font-semibold tracking-tight text-(--color-text) sm:text-lg">
                 {title}
               </h3>
             )}
             {subtitle && (
-              <p className="mt-1 text-xs text-[var(--color-text-muted)] sm:text-sm leading-relaxed">
+              <p className="mt-1 text-xs text-(--color-text-muted) sm:text-sm leading-relaxed">
                 {subtitle}
               </p>
             )}

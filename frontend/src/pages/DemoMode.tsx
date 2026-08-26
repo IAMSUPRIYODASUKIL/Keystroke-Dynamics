@@ -65,7 +65,7 @@ export function DemoMode() {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text)] sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-(--color-text) sm:text-3xl">
               Live Viva Sandbox
             </h1>
             <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-amber-400">
@@ -73,7 +73,7 @@ export function DemoMode() {
               Presentation Mode
             </span>
           </div>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+          <p className="mt-1 text-sm text-(--color-text-muted)">
             Instant sandboxed scoring against your enrolled profile without modifying audit histories or requiring credentials.
           </p>
         </div>
@@ -90,7 +90,7 @@ export function DemoMode() {
             variant="glow"
             title={
               <div className="flex items-center gap-2">
-                <Fingerprint size={18} className="text-[var(--color-accent)]" />
+                <Fingerprint size={18} className="text-(--color-accent)" />
                 <span>Live Sample Evaluation</span>
               </div>
             }
@@ -118,33 +118,33 @@ export function DemoMode() {
             }
             subtitle="Experiments to showcase live to professors or evaluators"
           >
-            <div className="flex flex-col gap-3 text-xs text-[var(--color-text-secondary)]">
-              <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)]/70 p-3">
-                <strong className="text-[var(--color-text)] font-semibold flex items-center gap-1.5 mb-1">
+            <div className="flex flex-col gap-3 text-xs text-(--color-text-secondary)">
+              <div className="rounded-xl border border-(--color-border) bg-(--color-surface-raised)/70 p-3">
+                <strong className="text-(--color-text) font-semibold flex items-center gap-1.5 mb-1">
                   <ShieldCheck size={14} className="text-emerald-400" />
                   1. Genuine Owner Match
                 </strong>
-                <p className="text-[var(--color-text-muted)] leading-relaxed">
+                <p className="text-(--color-text-muted) leading-relaxed">
                   Type fluently at your regular typing cadence. The model will produce high similarity (&gt;75%) and low risk.
                 </p>
               </div>
 
-              <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)]/70 p-3">
-                <strong className="text-[var(--color-text)] font-semibold flex items-center gap-1.5 mb-1">
+              <div className="rounded-xl border border-(--color-border) bg-(--color-surface-raised)/70 p-3">
+                <strong className="text-(--color-text) font-semibold flex items-center gap-1.5 mb-1">
                   <ShieldAlert size={14} className="text-rose-400" />
                   2. Deliberate Cadence Mismatch (Slow / Hesitant)
                 </strong>
-                <p className="text-[var(--color-text-muted)] leading-relaxed">
+                <p className="text-(--color-text-muted) leading-relaxed">
                   Hunt-and-peck each letter with deliberate 0.5s pauses. Flight times will spike, flagging Medium/High Risk.
                 </p>
               </div>
 
-              <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)]/70 p-3">
-                <strong className="text-[var(--color-text)] font-semibold flex items-center gap-1.5 mb-1">
+              <div className="rounded-xl border border-(--color-border) bg-(--color-surface-raised)/70 p-3">
+                <strong className="text-(--color-text) font-semibold flex items-center gap-1.5 mb-1">
                   <Activity size={14} className="text-amber-400" />
                   3. Peer Impostor Trial
                 </strong>
-                <p className="text-[var(--color-text-muted)] leading-relaxed">
+                <p className="text-(--color-text-muted) leading-relaxed">
                   Have a colleague type the phrase on your keyboard. Their natural cadence will diverge from your vector weights.
                 </p>
               </div>
@@ -157,7 +157,7 @@ export function DemoMode() {
       <Card
         title={
           <div className="flex items-center gap-2">
-            <Cpu size={18} className="text-[var(--color-accent)]" />
+            <Cpu size={18} className="text-(--color-accent)" />
             <span>Target Model Architecture</span>
           </div>
         }
@@ -206,12 +206,12 @@ function ResultPanel({ result, onReset }: { result: VerifyPreviewResponse; onRes
 
       <div className="flex items-center gap-2">
         <RiskBadge level={riskLevel} />
-        <span className="font-semibold text-sm text-[var(--color-text)]">
+        <span className="font-semibold text-sm text-(--color-text)">
           {result.similarity_label}
         </span>
       </div>
 
-      <p className="max-w-sm text-xs leading-relaxed text-[var(--color-text-muted)]">
+      <p className="max-w-sm text-xs leading-relaxed text-(--color-text-muted)">
         {result.match
           ? "Cadence metrics align within authentic standard deviation thresholds."
           : "Cadence vectors exceed normal variance boundaries — flagged as an impostor anomaly."}

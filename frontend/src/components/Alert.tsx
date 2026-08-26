@@ -27,7 +27,7 @@ const CONFIG = {
   info: {
     style: "border-cyan-500/30 bg-cyan-500/10 text-cyan-300 dark:text-cyan-200 shadow-[0_0_15px_rgba(0,242,254,0.1)]",
     icon: Info,
-    iconColor: "text-[var(--color-accent)]",
+    iconColor: "text-(--color-accent)",
   },
 };
 

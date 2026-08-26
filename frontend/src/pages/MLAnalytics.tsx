@@ -89,15 +89,15 @@ export function MLAnalytics() {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text)] sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-(--color-text) sm:text-3xl">
               ML Research Laboratory
             </h1>
-            <span className="inline-flex items-center gap-1 rounded-full border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--color-accent)]">
+            <span className="inline-flex items-center gap-1 rounded-full border border-(--color-accent)/30 bg-(--color-accent)/10 px-2.5 py-0.5 text-xs font-semibold text-(--color-accent)">
               <BrainCircuit size={12} />
               Tri-Classifier Ensemble
             </span>
           </div>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+          <p className="mt-1 text-sm text-(--color-text-muted)">
             Transparent algorithmic evaluation across Random Forest, Support Vector Machines, and Logistic Regression.
           </p>
         </div>
@@ -139,7 +139,7 @@ export function MLAnalytics() {
       <Card
         title={
           <div className="flex items-center gap-2">
-            <BarChart3 size={18} className="text-[var(--color-accent)]" />
+            <BarChart3 size={18} className="text-(--color-accent)" />
             <span>Dataset Distribution</span>
           </div>
         }
@@ -157,7 +157,7 @@ export function MLAnalytics() {
         variant="glow"
         title={
           <div className="flex items-center gap-2">
-            <Cpu size={18} className="text-[var(--color-accent)]" />
+            <Cpu size={18} className="text-(--color-accent)" />
             <span>Your Personal Verification Ensemble</span>
           </div>
         }
@@ -188,10 +188,10 @@ export function MLAnalytics() {
             <ModelComparisonChart models={myRun.models} />
 
             {/* Performance Benchmark Table */}
-            <div className="overflow-x-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)]/60 backdrop-blur-md">
+            <div className="overflow-x-auto rounded-xl border border-(--color-border) bg-(--color-surface-raised)/60 backdrop-blur-md">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-[var(--color-border)] text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">
+                  <tr className="border-b border-(--color-border) text-xs font-semibold text-(--color-text-muted) uppercase tracking-wider">
                     <th className="py-3 px-4">Classifier</th>
                     <th className="py-3 px-4">Accuracy</th>
                     <th className="py-3 px-4">F1 Score</th>
@@ -201,19 +201,19 @@ export function MLAnalytics() {
                     <th className="py-3 px-4 text-center">Active Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[var(--color-border)] font-mono text-xs">
+                <tbody className="divide-y divide-(--color-border) font-mono text-xs">
                   {myRun.models.map((m) => (
                     <tr
                       key={m.model_type}
                       className={
                         m.is_active
-                          ? "bg-[var(--color-accent)]/5 font-semibold text-[var(--color-text)]"
-                          : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-highlight)]"
+                          ? "bg-(--color-accent)/5 font-semibold text-(--color-text)"
+                          : "text-(--color-text-secondary) hover:bg-(--color-surface-highlight)"
                       }
                     >
-                      <td className="py-3 px-4 font-sans font-medium text-[var(--color-text)] flex items-center gap-2">
+                      <td className="py-3 px-4 font-sans font-medium text-(--color-text) flex items-center gap-2">
                         {m.is_active && (
-                          <span className="flex h-2 w-2 rounded-full bg-[var(--color-accent)] animate-pulse" />
+                          <span className="flex h-2 w-2 rounded-full bg-(--color-accent) animate-pulse" />
                         )}
                         {MODEL_LABELS[m.model_type]}
                       </td>
@@ -231,7 +231,7 @@ export function MLAnalytics() {
                             Primary
                           </span>
                         ) : (
-                          <span className="text-[var(--color-text-muted)] text-[11px]">Benchmarked</span>
+                          <span className="text-(--color-text-muted) text-[11px]">Benchmarked</span>
                         )}
                       </td>
                     </tr>
@@ -240,11 +240,11 @@ export function MLAnalytics() {
               </table>
             </div>
 
-            <div className="flex items-start gap-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]/60 p-3.5 text-xs text-[var(--color-text-muted)]">
-              <HelpCircle size={15} className="shrink-0 text-[var(--color-accent)] mt-0.5" />
+            <div className="flex items-start gap-2 rounded-xl border border-(--color-border) bg-(--color-surface)/60 p-3.5 text-xs text-(--color-text-muted)">
+              <HelpCircle size={15} className="shrink-0 text-(--color-accent) mt-0.5" />
               <p className="leading-relaxed">
-                <strong className="text-[var(--color-text)]">FAR (False Acceptance Rate)</strong> measures how often an unauthorized imposter rhythm is mistakenly validated.{" "}
-                <strong className="text-[var(--color-text)]">FRR (False Rejection Rate)</strong> measures how often your authentic rhythm is wrongly challenged. The system automatically selects the primary classifier with optimal F1 tie-broken toward minimal FAR.
+                <strong className="text-(--color-text)">FAR (False Acceptance Rate)</strong> measures how often an unauthorized imposter rhythm is mistakenly validated.{" "}
+                <strong className="text-(--color-text)">FRR (False Rejection Rate)</strong> measures how often your authentic rhythm is wrongly challenged. The system automatically selects the primary classifier with optimal F1 tie-broken toward minimal FAR.
               </p>
             </div>
 
@@ -253,8 +253,8 @@ export function MLAnalytics() {
               <div className="grid gap-6 lg:grid-cols-2 pt-2">
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
-                    <Layers size={16} className="text-[var(--color-accent)]" />
-                    <h4 className="text-sm font-semibold text-[var(--color-text)]">
+                    <Layers size={16} className="text-(--color-accent)" />
+                    <h4 className="text-sm font-semibold text-(--color-text)">
                       Confusion Matrix — {MODEL_LABELS[activeModel.model_type]}
                     </h4>
                   </div>
@@ -266,8 +266,8 @@ export function MLAnalytics() {
 
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
-                    <Sparkles size={16} className="text-[var(--color-accent)]" />
-                    <h4 className="text-sm font-semibold text-[var(--color-text)]">
+                    <Sparkles size={16} className="text-(--color-accent)" />
+                    <h4 className="text-sm font-semibold text-(--color-text)">
                       Feature Weight Ranking — {MODEL_LABELS[activeModel.model_type]}
                     </h4>
                   </div>
@@ -283,7 +283,7 @@ export function MLAnalytics() {
       <Card
         title={
           <div className="flex items-center gap-2">
-            <Users size={18} className="text-[var(--color-accent)]" />
+            <Users size={18} className="text-(--color-accent)" />
             <span>Multi-User Global Classification (Demo Benchmark)</span>
           </div>
         }

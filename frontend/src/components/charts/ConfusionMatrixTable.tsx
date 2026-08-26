@@ -23,11 +23,11 @@ export function ConfusionMatrixTable({ matrix, labels }: ConfusionMatrixTablePro
         <caption className="sr-only">Confusion matrix: rows are actual class, columns are predicted class.</caption>
         <thead>
           <tr>
-            <th scope="col" className="p-2 text-left text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+            <th scope="col" className="p-2 text-left text-xs font-semibold uppercase tracking-wider text-(--color-text-muted)">
               Actual \ Pred
             </th>
             {labels.map((label) => (
-              <th key={label} scope="col" className="p-2 text-center text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+              <th key={label} scope="col" className="p-2 text-center text-xs font-semibold uppercase tracking-wider text-(--color-text-muted)">
                 {label}
               </th>
             ))}
@@ -36,7 +36,7 @@ export function ConfusionMatrixTable({ matrix, labels }: ConfusionMatrixTablePro
         <tbody>
           {matrix.map((row, i) => (
             <tr key={i}>
-              <th scope="row" className="p-2 text-left text-xs font-semibold text-[var(--color-text-secondary)]">
+              <th scope="row" className="p-2 text-left text-xs font-semibold text-(--color-text-secondary)">
                 {labels[i]}
               </th>
               {row.map((value, j) => {
@@ -48,7 +48,7 @@ export function ConfusionMatrixTable({ matrix, labels }: ConfusionMatrixTablePro
                 return (
                   <td
                     key={j}
-                    className="rounded-xl p-3 text-center font-mono-key text-sm font-bold transition-all duration-200 border border-[var(--color-border)] shadow-xs"
+                    className="rounded-xl p-3 text-center font-mono-key text-sm font-bold transition-all duration-200 border border-(--color-border) shadow-xs"
                     style={{
                       backgroundColor: value === 0 ? "var(--color-surface-raised)" : SEQUENTIAL_STEPS[stepIndex],
                       color: value === 0 ? "var(--color-text-muted)" : (stepIndex > 4 ? "#04141a" : "#ffffff"),

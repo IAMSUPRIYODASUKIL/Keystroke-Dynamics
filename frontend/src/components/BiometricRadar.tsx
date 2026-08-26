@@ -93,7 +93,7 @@ export function BiometricRadar({
             r={dimensions.radius * 0.4}
             fill="none"
             stroke="currentColor"
-            className="text-[var(--color-border)]"
+            className="text-(--color-border)"
             strokeDasharray="2 4"
             strokeWidth="1"
           />
@@ -103,7 +103,7 @@ export function BiometricRadar({
             r={dimensions.radius * 0.7}
             fill="none"
             stroke="currentColor"
-            className="text-[var(--color-border)]"
+            className="text-(--color-border)"
             strokeDasharray="3 3"
             strokeWidth="1"
           />
@@ -115,7 +115,7 @@ export function BiometricRadar({
             r={dimensions.radius}
             fill="none"
             stroke="currentColor"
-            className="text-[var(--color-border)]"
+            className="text-(--color-border)"
             strokeWidth={dimensions.stroke}
           />
 
@@ -155,22 +155,22 @@ export function BiometricRadar({
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-2">
           {isScanning ? (
             <div className="flex flex-col items-center gap-1">
-              <Activity className="animate-pulse text-[var(--color-accent)]" size={dimensions.iconSize} />
-              <span className="text-[10px] uppercase font-mono tracking-widest text-[var(--color-accent)]">
+              <Activity className="animate-pulse text-(--color-accent)" size={dimensions.iconSize} />
+              <span className="text-[10px] uppercase font-mono tracking-widest text-(--color-accent)">
                 Analyzing
               </span>
             </div>
           ) : score !== null ? (
             <div className="flex flex-col items-center">
-              <span className={clsx("font-bold tracking-tight font-mono-key text-[var(--color-text)]", dimensions.fontSize)}>
+              <span className={clsx("font-bold tracking-tight font-mono-key text-(--color-text)", dimensions.fontSize)}>
                 {(validScore * 100).toFixed(0)}%
               </span>
-              <span className="text-[10px] font-medium uppercase tracking-wider text-[var(--color-text-muted)]">
+              <span className="text-[10px] font-medium uppercase tracking-wider text-(--color-text-muted)">
                 Match
               </span>
             </div>
           ) : (
-            <div className="flex flex-col items-center text-[var(--color-text-muted)]">
+            <div className="flex flex-col items-center text-(--color-text-muted)">
               <Fingerprint size={dimensions.iconSize} className="opacity-60" />
               <span className="text-[9px] uppercase tracking-wider mt-1 opacity-75">Ready</span>
             </div>
@@ -180,7 +180,7 @@ export function BiometricRadar({
 
       {label && (
         <div className="mt-3 flex flex-col items-center gap-1 text-center">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+          <span className="text-xs font-semibold uppercase tracking-wider text-(--color-text-muted)">
             {label}
           </span>
           {score !== null && (

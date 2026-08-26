@@ -16,8 +16,8 @@ const RISK_STYLES: Record<RiskLevel, { badge: string; dot: string }> = {
     dot: "bg-rose-400",
   },
   unknown: {
-    badge: "bg-[var(--color-surface-highlight)] text-[var(--color-text-muted)] border-[var(--color-border)]",
-    dot: "bg-[var(--color-text-muted)]",
+    badge: "bg-(--color-surface-highlight) text-(--color-text-muted) border-(--color-border)",
+    dot: "bg-(--color-text-muted)",
   },
 };
 
@@ -76,9 +76,9 @@ export function StatusBadge({
         tone === "warning" &&
           "border-amber-500/30 bg-amber-500/10 text-amber-400",
         tone === "cyan" &&
-          "border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 text-[var(--color-accent)]",
+          "border-(--color-accent)/30 bg-(--color-accent)/10 text-(--color-accent)",
         tone === "neutral" &&
-          "border-[var(--color-border)] bg-[var(--color-surface-raised)] text-[var(--color-text-muted)]",
+          "border-(--color-border) bg-(--color-surface-raised) text-(--color-text-muted)",
       )}
     >
       <Sparkles size={11} />

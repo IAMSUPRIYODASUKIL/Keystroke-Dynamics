@@ -110,14 +110,14 @@ export function Enroll() {
     <div className="mx-auto max-w-2xl flex flex-col gap-6">
       {/* Header */}
       <div className="text-center">
-        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3.5 py-1 text-xs font-semibold text-[var(--color-accent)] backdrop-blur-md">
+        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3.5 py-1 text-xs font-semibold text-(--color-accent) backdrop-blur-md">
           <Fingerprint size={13} />
           <span>Biometric Rhythm Calibration</span>
         </div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-[var(--color-text)] sm:text-3xl">
+        <h1 className="text-2xl font-extrabold tracking-tight text-(--color-text) sm:text-3xl">
           Learn Your Unique Typing Rhythm
         </h1>
-        <p className="mt-2 text-sm text-[var(--color-text-muted)] max-w-lg mx-auto leading-relaxed">
+        <p className="mt-2 text-sm text-(--color-text-muted) max-w-lg mx-auto leading-relaxed">
           Type the exact challenge phrase {minRequired} times. We only extract microsecond cadence timing
           for this phrase — nothing else you type is ever recorded.
         </p>
@@ -129,14 +129,14 @@ export function Enroll() {
         {/* Sample Progress Tracker Header */}
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--color-accent)]/15 font-mono text-xs font-bold text-[var(--color-accent)]">
+            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-(--color-accent)/15 font-mono text-xs font-bold text-(--color-accent)">
               {currentSampleNum}
             </span>
-            <span className="font-semibold text-sm text-[var(--color-text)]">
+            <span className="font-semibold text-sm text-(--color-text)">
               Sample {currentSampleNum} of {minRequired}
             </span>
           </div>
-          <span className="font-mono text-xs font-medium text-[var(--color-text-muted)]">
+          <span className="font-mono text-xs font-medium text-(--color-text-muted)">
             {samplesCollected} of {minRequired} Captured ({Math.round(progressPercent)}%)
           </span>
         </div>
@@ -151,10 +151,10 @@ export function Enroll() {
                 key={idx}
                 className={`h-2 flex-1 rounded-full transition-all duration-300 ${
                   isDone
-                    ? "bg-gradient-to-r from-teal-400 to-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                    ? "bg-linear-to-r from-teal-400 to-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
                     : isCurrent
-                      ? "bg-[var(--color-accent)] animate-pulse shadow-[0_0_8px_rgba(0,242,254,0.5)]"
-                      : "bg-[var(--color-border)]"
+                      ? "bg-(--color-accent) animate-pulse shadow-[0_0_8px_rgba(0,242,254,0.5)]"
+                      : "bg-(--color-border)"
                 }`}
               />
             );
@@ -175,7 +175,7 @@ export function Enroll() {
               <p className="text-xl font-bold text-emerald-400">
                 Your Typing Profile Is Ready!
               </p>
-              <p className="mt-2 text-xs text-[var(--color-text-muted)] leading-relaxed">
+              <p className="mt-2 text-xs text-(--color-text-muted) leading-relaxed">
                 {lastResult?.training_message ??
                   "Your 3-classifier ensemble has been trained. You can now use your typing cadence as a 2FA behavioral biometric."}
               </p>
@@ -199,10 +199,10 @@ export function Enroll() {
 
         {/* Live Feature Engineering Telemetry Breakdown */}
         {lastResult && !isReady && (
-          <div className="mt-6 pt-5 border-t border-[var(--color-border)]">
+          <div className="mt-6 pt-5 border-t border-(--color-border)">
             <div className="mb-3 flex items-center gap-2">
-              <Activity size={14} className="text-[var(--color-accent)]" />
-              <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
+              <Activity size={14} className="text-(--color-accent)" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-(--color-text-secondary)">
                 Latest Keystroke Telemetry Vectors
               </span>
             </div>
@@ -232,7 +232,7 @@ export function Enroll() {
         )}
       </Card>
 
-      <p className="text-center text-xs text-[var(--color-text-muted)]">
+      <p className="text-center text-xs text-(--color-text-muted)">
         You can retrain or delete this typing profile at any time from your dashboard.
       </p>
     </div>
@@ -249,12 +249,12 @@ function MiniStat({
   value: string;
 }) {
   return (
-    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)]/80 p-3 backdrop-blur-md">
-      <div className="flex items-center justify-center gap-1 text-[10px] font-semibold tracking-wider text-[var(--color-text-muted)] uppercase">
-        <Icon size={11} className="text-[var(--color-accent)]" />
+    <div className="rounded-xl border border-(--color-border) bg-(--color-surface-raised)/80 p-3 backdrop-blur-md">
+      <div className="flex items-center justify-center gap-1 text-[10px] font-semibold tracking-wider text-(--color-text-muted) uppercase">
+        <Icon size={11} className="text-(--color-accent)" />
         <span>{label}</span>
       </div>
-      <p className="mt-1 font-mono-key text-base font-bold text-[var(--color-text)]">{value}</p>
+      <p className="mt-1 font-mono-key text-base font-bold text-(--color-text)">{value}</p>
     </div>
   );
 }

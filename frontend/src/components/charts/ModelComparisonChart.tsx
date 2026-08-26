@@ -65,7 +65,7 @@ export function ModelComparisonChart({ models }: ModelComparisonChartProps) {
           />
           <Legend
             formatter={(value: string) => (
-              <span className="text-xs font-medium text-[var(--color-text-secondary)]">
+              <span className="text-xs font-medium text-(--color-text-secondary)">
                 {MODEL_LABELS[value as keyof typeof MODEL_LABELS] ?? value}
               </span>
             )}

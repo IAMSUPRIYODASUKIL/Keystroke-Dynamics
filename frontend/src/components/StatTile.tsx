@@ -20,10 +20,10 @@ export function StatTile({
 }: StatTileProps) {
   const accentStyles = {
     cyan: {
-      border: "hover:border-[var(--color-accent)]/50",
-      glow: "from-[var(--color-accent)]/10 to-transparent",
-      iconBg: "bg-[var(--color-accent)]/10 text-[var(--color-accent)] border-[var(--color-accent)]/20",
-      dot: "bg-[var(--color-accent)]",
+      border: "hover:border-(--color-accent)/50",
+      glow: "from-(--color-accent)/10 to-transparent",
+      iconBg: "bg-(--color-accent)/10 text-(--color-accent) border-(--color-accent)/20",
+      dot: "bg-(--color-accent)",
     },
     emerald: {
       border: "hover:border-emerald-500/50",
@@ -50,17 +50,17 @@ export function StatTile({
       dot: "bg-rose-400",
     },
     neutral: {
-      border: "hover:border-[var(--color-border-glow)]",
-      glow: "from-[var(--color-surface-highlight)] to-transparent",
-      iconBg: "bg-[var(--color-surface-highlight)] text-[var(--color-text-muted)] border-[var(--color-border)]",
-      dot: "bg-[var(--color-text-muted)]",
+      border: "hover:border-(--color-border-glow)",
+      glow: "from-(--color-surface-highlight) to-transparent",
+      iconBg: "bg-(--color-surface-highlight) text-(--color-text-muted) border-(--color-border)",
+      dot: "bg-(--color-text-muted)",
     },
   }[accent];
 
   return (
     <div
       className={clsx(
-        "group relative overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)]/80 p-5 backdrop-blur-xl transition-all duration-300 hover:shadow-lg",
+        "group relative overflow-hidden rounded-2xl border border-(--color-border) bg-(--color-surface)/80 p-5 backdrop-blur-xl transition-all duration-300 hover:shadow-lg",
         accentStyles.border,
         className,
       )}
@@ -68,7 +68,7 @@ export function StatTile({
       {/* Background Gradient Mesh */}
       <div
         className={clsx(
-          "pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full bg-gradient-to-br opacity-50 blur-2xl transition-opacity duration-300 group-hover:opacity-100",
+          "pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full bg-linear-to-br opacity-50 blur-2xl transition-opacity duration-300 group-hover:opacity-100",
           accentStyles.glow,
         )}
       />
@@ -76,7 +76,7 @@ export function StatTile({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className={clsx("h-1.5 w-1.5 rounded-full", accentStyles.dot)} />
-          <p className="text-[11px] font-semibold tracking-wider text-[var(--color-text-muted)] uppercase">
+          <p className="text-[11px] font-semibold tracking-wider text-(--color-text-muted) uppercase">
             {label}
           </p>
         </div>
@@ -93,13 +93,13 @@ export function StatTile({
       </div>
 
       <div className="mt-3 flex items-baseline justify-between">
-        <p className="font-mono-key text-2xl font-bold tracking-tight text-[var(--color-text)] sm:text-3xl">
+        <p className="font-mono-key text-2xl font-bold tracking-tight text-(--color-text) sm:text-3xl">
           {value}
         </p>
       </div>
 
       {hint && (
-        <p className="mt-2 text-xs font-medium text-[var(--color-text-muted)]">
+        <p className="mt-2 text-xs font-medium text-(--color-text-muted)">
           {hint}
         </p>
       )}

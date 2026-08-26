@@ -100,30 +100,30 @@ export function Login() {
         <div
           className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all ${
             step === "credentials"
-              ? "bg-[var(--color-accent)]/15 text-[var(--color-accent)] border border-[var(--color-accent)]/30 shadow-xs"
-              : "bg-[var(--color-surface)] text-[var(--color-text-muted)] border border-[var(--color-border)]"
+              ? "bg-(--color-accent)/15 text-(--color-accent) border border-(--color-accent)/30 shadow-xs"
+              : "bg-(--color-surface) text-(--color-text-muted) border border-(--color-border)"
           }`}
         >
           <KeyRound size={12} />
           <span>1. Password</span>
         </div>
-        <div className="h-0.5 w-4 bg-[var(--color-border)]" />
+        <div className="h-0.5 w-4 bg-(--color-border)" />
         <div
           className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all ${
             step === "typing"
-              ? "bg-[var(--color-accent)]/15 text-[var(--color-accent)] border border-[var(--color-accent)]/30 shadow-xs"
-              : "bg-[var(--color-surface)] text-[var(--color-text-muted)] border border-[var(--color-border)]"
+              ? "bg-(--color-accent)/15 text-(--color-accent) border border-(--color-accent)/30 shadow-xs"
+              : "bg-(--color-surface) text-(--color-text-muted) border border-(--color-border)"
           }`}
         >
           <Activity size={12} />
           <span>2. Rhythm Challenge</span>
         </div>
-        <div className="h-0.5 w-4 bg-[var(--color-border)]" />
+        <div className="h-0.5 w-4 bg-(--color-border)" />
         <div
           className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all ${
             step === "result"
               ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-xs"
-              : "bg-[var(--color-surface)] text-[var(--color-text-muted)] border border-[var(--color-border)]"
+              : "bg-(--color-surface) text-(--color-text-muted) border border-(--color-border)"
           }`}
         >
           <ShieldCheck size={12} />
@@ -170,9 +170,9 @@ export function Login() {
               <ArrowRight size={16} />
             </Button>
 
-            <p className="text-center text-xs text-[var(--color-text-muted)]">
+            <p className="text-center text-xs text-(--color-text-muted)">
               Don't have an enrolled biometric account?{" "}
-              <Link to="/register" className="text-[var(--color-accent)] font-medium underline underline-offset-2 hover:brightness-110">
+              <Link to="/register" className="text-(--color-accent) font-medium underline underline-offset-2 hover:brightness-110">
                 Register here
               </Link>
             </p>
@@ -181,9 +181,9 @@ export function Login() {
 
         {step === "typing" && isConfigLoading && (
           <div className="flex flex-col items-center justify-center py-10 gap-3 text-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-accent)] border-t-transparent" />
-            <p className="text-sm font-medium text-[var(--color-text)]">Retrieving Challenge Phrase…</p>
-            <p className="text-xs text-[var(--color-text-muted)]">Connecting to cryptographic auth pipeline</p>
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-(--color-accent) border-t-transparent" />
+            <p className="text-sm font-medium text-(--color-text)">Retrieving Challenge Phrase…</p>
+            <p className="text-xs text-(--color-text-muted)">Connecting to cryptographic auth pipeline</p>
           </div>
         )}
 
@@ -212,7 +212,7 @@ export function Login() {
             <div className="flex items-center justify-between pt-2">
               <button
                 type="button"
-                className="text-xs font-medium text-[var(--color-text-muted)] underline underline-offset-2 hover:text-[var(--color-text)] cursor-pointer"
+                className="text-xs font-medium text-(--color-text-muted) underline underline-offset-2 hover:text-(--color-text) cursor-pointer"
                 onClick={() => setStep("credentials")}
               >
                 ← Back to credentials
@@ -220,7 +220,7 @@ export function Login() {
               <button
                 type="button"
                 onClick={() => setBoxKey((k) => k + 1)}
-                className="flex items-center gap-1 text-xs text-[var(--color-accent)] hover:underline cursor-pointer"
+                className="flex items-center gap-1 text-xs text-(--color-accent) hover:underline cursor-pointer"
               >
                 <RefreshCw size={12} />
                 Restart Phrase
@@ -253,7 +253,7 @@ export function Login() {
                 </span>
               </Field>
               <Field label="Keystroke Cadence">
-                <span className="text-[var(--color-text)] font-semibold">
+                <span className="text-(--color-text) font-semibold">
                   {result.typing_evaluated ? (result.similarity_label ?? "—") : "Not Evaluated"}
                 </span>
               </Field>
@@ -290,11 +290,11 @@ export function Login() {
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)]/90 px-3.5 py-2.5 backdrop-blur-md">
-      <dt className="text-[10px] font-semibold tracking-wider text-[var(--color-text-muted)] uppercase">
+    <div className="rounded-xl border border-(--color-border) bg-(--color-surface-raised)/90 px-3.5 py-2.5 backdrop-blur-md">
+      <dt className="text-[10px] font-semibold tracking-wider text-(--color-text-muted) uppercase">
         {label}
       </dt>
-      <dd className="mt-0.5 font-medium text-[var(--color-text)]">{children}</dd>
+      <dd className="mt-0.5 font-medium text-(--color-text)">{children}</dd>
     </div>
   );
 }

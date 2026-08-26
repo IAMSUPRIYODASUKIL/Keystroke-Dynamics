@@ -90,7 +90,7 @@ export function Dashboard() {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text)] sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-(--color-text) sm:text-3xl">
               Command Center
             </h1>
             <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-400">
@@ -98,8 +98,8 @@ export function Dashboard() {
               Active Shield
             </span>
           </div>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-            Welcome back, <strong className="text-[var(--color-text)] font-semibold">{profile.user.name}</strong>. Here's your live behavioral identity telemetry.
+          <p className="mt-1 text-sm text-(--color-text-muted)">
+            Welcome back, <strong className="text-(--color-text) font-semibold">{profile.user.name}</strong>. Here's your live behavioral identity telemetry.
           </p>
         </div>
 
@@ -169,12 +169,12 @@ export function Dashboard() {
           className="lg:col-span-2"
           title={
             <div className="flex items-center gap-2">
-              <History size={18} className="text-[var(--color-accent)]" />
+              <History size={18} className="text-(--color-accent)" />
               <span>Recent Verification Attempts</span>
             </div>
           }
           actions={
-            <Link to="/activity" className="text-xs font-semibold text-[var(--color-accent)] hover:underline flex items-center gap-1">
+            <Link to="/activity" className="text-xs font-semibold text-(--color-accent) hover:underline flex items-center gap-1">
               <span>View full audit log</span>
               <ArrowUpRight size={12} />
             </Link>
@@ -187,18 +187,18 @@ export function Dashboard() {
               {activity.attempts.map((attempt) => (
                 <li
                   key={attempt.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)]/90 p-3.5 backdrop-blur-md transition-all hover:border-[var(--color-border-glow)]"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-(--color-border) bg-(--color-surface-raised)/90 p-3.5 backdrop-blur-md transition-all hover:border-(--color-border-glow)"
                 >
                   <div className="flex flex-col gap-0.5">
-                    <p className="font-mono text-xs font-medium text-[var(--color-text-secondary)]">
+                    <p className="font-mono text-xs font-medium text-(--color-text-secondary)">
                       {new Date(attempt.created_at).toLocaleString()}
                     </p>
-                    <p className="text-xs text-[var(--color-text-muted)]">
+                    <p className="text-xs text-(--color-text-muted)">
                       Password: <strong className={attempt.password_correct ? "text-emerald-400 font-semibold" : "text-rose-400 font-semibold"}>
                         {attempt.password_correct ? "Correct" : "Incorrect"}
                       </strong>
                       {attempt.similarity_score !== null && (
-                        <span> · Biometric Similarity: <strong className="text-[var(--color-text)] font-semibold">{(attempt.similarity_score * 100).toFixed(0)}%</strong></span>
+                        <span> · Biometric Similarity: <strong className="text-(--color-text) font-semibold">{(attempt.similarity_score * 100).toFixed(0)}%</strong></span>
                       )}
                       {attempt.method_used && <span> ({MODEL_LABELS[attempt.method_used]})</span>}
                     </p>
@@ -217,7 +217,7 @@ export function Dashboard() {
         <Card
           title={
             <div className="flex items-center gap-2">
-              <ShieldAlert size={18} className="text-[var(--color-accent)]" />
+              <ShieldAlert size={18} className="text-(--color-accent)" />
               <span>Telemetry Risk Gauge</span>
             </div>
           }
@@ -230,7 +230,7 @@ export function Dashboard() {
                 size="md"
                 label="Latest Session Score"
               />
-              <p className="text-xs text-[var(--color-text-muted)] max-w-xs leading-relaxed">
+              <p className="text-xs text-(--color-text-muted) max-w-xs leading-relaxed">
                 Evaluated with {latestAttempt.method_used ? MODEL_LABELS[latestAttempt.method_used] : "statistical baseline"} against enrolled profile.
               </p>
             </div>
@@ -269,7 +269,7 @@ export function Dashboard() {
             <StatusBadge label="Minimum 5 samples required to trigger training" tone="warning" />
           )}
         </div>
-        <p className="mt-3 text-xs text-[var(--color-text-muted)]">
+        <p className="mt-3 text-xs text-(--color-text-muted)">
           Deleting your profile permanently purges all raw keystroke timestamps and scikit-learn models. Your account password remains untouched.
         </p>
       </Card>

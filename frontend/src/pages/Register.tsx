@@ -86,7 +86,7 @@ export function Register() {
         variant="glow"
         title={
           <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--color-accent)]/15 text-[var(--color-accent)]">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-(--color-accent)/15 text-(--color-accent)">
               <Shield size={18} />
             </span>
             <span>Create Secure Profile</span>
@@ -131,12 +131,12 @@ export function Register() {
           {password.length > 0 && (
             <div className="flex flex-col gap-1.5 px-1 animate-fadeIn">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-[var(--color-text-muted)]">Password Strength:</span>
-                <span className="font-semibold text-[var(--color-text)]">
+                <span className="text-(--color-text-muted)">Password Strength:</span>
+                <span className="font-semibold text-(--color-text)">
                   {strengthLabels[passwordStrength]}
                 </span>
               </div>
-              <div className="flex gap-1 h-1.5 w-full overflow-hidden rounded-full bg-[var(--color-border)]">
+              <div className="flex gap-1 h-1.5 w-full overflow-hidden rounded-full bg-(--color-border)">
                 {[1, 2, 3, 4].map((step) => (
                   <div
                     key={step}
@@ -166,9 +166,9 @@ export function Register() {
             <ArrowRight size={16} />
           </Button>
 
-          <p className="text-center text-xs text-[var(--color-text-muted)]">
+          <p className="text-center text-xs text-(--color-text-muted)">
             Already have an account?{" "}
-            <Link to="/login" className="text-[var(--color-accent)] font-medium underline underline-offset-2 hover:brightness-110">
+            <Link to="/login" className="text-(--color-accent) font-medium underline underline-offset-2 hover:brightness-110">
               Log in here
             </Link>
           </p>

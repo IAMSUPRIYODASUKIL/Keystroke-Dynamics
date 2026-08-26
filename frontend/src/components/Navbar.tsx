@@ -32,22 +32,22 @@ export function Navbar() {
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-[var(--color-border)] bg-[var(--color-bg)]/80 backdrop-blur-xl transition-colors duration-300">
+    <header className="sticky top-0 z-30 border-b border-(--color-border) bg-(--color-bg)/80 backdrop-blur-xl transition-colors duration-300">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         {/* Brand Logo */}
-        <NavLink to="/" className="group flex items-center gap-2.5 font-semibold text-[var(--color-text)]">
-          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-accent)]/20 to-[var(--color-accent-secondary)]/20 border border-[var(--color-accent)]/30 text-[var(--color-accent)] shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:border-[var(--color-accent)]/60 group-hover:shadow-[0_0_15px_rgba(0,242,254,0.3)]">
+        <NavLink to="/" className="group flex items-center gap-2.5 font-semibold text-(--color-text)">
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-(--color-accent)/20 to-(--color-accent-secondary)/20 border border-(--color-accent)/30 text-(--color-accent) shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:border-(--color-accent)/60 group-hover:shadow-[0_0_15px_rgba(0,242,254,0.3)]">
             <Keyboard size={18} className="transition-transform duration-300 group-hover:rotate-6" />
             <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent)] opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-accent)]" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-(--color-accent) opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-(--color-accent)" />
             </span>
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-bold tracking-tight text-[var(--color-text)] flex items-center gap-1.5">
+            <span className="text-sm font-bold tracking-tight text-(--color-text) flex items-center gap-1.5">
               Keystroke <span className="gradient-text-cyan">Dynamics</span>
             </span>
-            <span className="hidden text-[9px] uppercase tracking-widest text-[var(--color-text-muted)] font-mono sm:inline">
+            <span className="hidden text-[9px] uppercase tracking-widest text-(--color-text-muted) font-mono sm:inline">
               Biometric Engine
             </span>
           </div>
@@ -55,7 +55,7 @@ export function Navbar() {
 
         {/* Primary Desktop Nav Links */}
         {isAuthenticated && (
-          <nav className="hidden items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)]/60 p-1 backdrop-blur-md md:flex" aria-label="Primary">
+          <nav className="hidden items-center gap-1 rounded-full border border-(--color-border) bg-(--color-surface)/60 p-1 backdrop-blur-md md:flex" aria-label="Primary">
             {LINKS.map((link) => {
               const Icon = link.icon;
               return (
@@ -66,8 +66,8 @@ export function Navbar() {
                     clsx(
                       "flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200",
                       isActive
-                        ? "bg-gradient-to-r from-[var(--color-accent)]/15 to-[var(--color-accent-secondary)]/15 text-[var(--color-accent)] shadow-sm border border-[var(--color-accent)]/30 font-semibold"
-                        : "text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-highlight)]",
+                        ? "bg-linear-to-r from-(--color-accent)/15 to-(--color-accent-secondary)/15 text-(--color-accent) shadow-sm border border-(--color-accent)/30 font-semibold"
+                        : "text-(--color-text-muted) hover:text-(--color-text) hover:bg-(--color-surface-highlight)",
                     )
                   }
                 >
@@ -87,9 +87,9 @@ export function Navbar() {
             onClick={toggleSound}
             aria-label={soundEnabled ? "Mute sound effects" : "Enable sound effects"}
             title={soundEnabled ? "Sound effects: ON" : "Sound effects: OFF"}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] transition-all hover:text-[var(--color-text)] hover:border-[var(--color-border-glow)] cursor-pointer"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-(--color-border) bg-(--color-surface) text-(--color-text-muted) transition-all hover:text-(--color-text) hover:border-(--color-border-glow) cursor-pointer"
           >
-            {soundEnabled ? <Volume2 size={15} className="text-[var(--color-accent)]" /> : <VolumeX size={15} />}
+            {soundEnabled ? <Volume2 size={15} className="text-(--color-accent)" /> : <VolumeX size={15} />}
           </button>
 
           {/* Theme Switcher Toggle */}
@@ -98,7 +98,7 @@ export function Navbar() {
             onClick={toggleTheme}
             aria-label="Toggle dark / light theme"
             title={`Current theme: ${resolvedTheme}`}
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text-muted)] transition-all hover:text-[var(--color-text)] hover:border-[var(--color-border-glow)] cursor-pointer"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-(--color-border) bg-(--color-surface) text-(--color-text-muted) transition-all hover:text-(--color-text) hover:border-(--color-border-glow) cursor-pointer"
           >
             {resolvedTheme === "dark" ? (
               <Sun size={15} className="text-amber-400 transition-transform hover:rotate-45" />
@@ -111,11 +111,11 @@ export function Navbar() {
           {isAuthenticated ? (
             <div className="flex items-center gap-2">
               {/* User Avatar Pill */}
-              <div className="hidden items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface-raised)] py-1 pr-3 pl-1 sm:flex">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-to-tr from-[var(--color-accent)] to-[var(--color-accent-secondary)] text-[11px] font-bold text-black shadow-xs">
+              <div className="hidden items-center gap-2 rounded-full border border-(--color-border) bg-(--color-surface-raised) py-1 pr-3 pl-1 sm:flex">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-linear-to-tr from-(--color-accent) to-(--color-accent-secondary) text-[11px] font-bold text-black shadow-xs">
                   {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
                 </div>
-                <span className="max-w-[100px] truncate text-xs font-medium text-[var(--color-text)]">
+                <span className="max-w-[100px] truncate text-xs font-medium text-(--color-text)">
                   {user?.name}
                 </span>
               </div>
@@ -148,7 +148,7 @@ export function Navbar() {
 
       {/* Mobile Sub-Navigation Bar */}
       {isAuthenticated && (
-        <nav className="flex gap-1 overflow-x-auto border-t border-[var(--color-border)] bg-[var(--color-surface)]/90 px-4 py-1.5 backdrop-blur md:hidden" aria-label="Mobile Primary">
+        <nav className="flex gap-1 overflow-x-auto border-t border-(--color-border) bg-(--color-surface)/90 px-4 py-1.5 backdrop-blur md:hidden" aria-label="Mobile Primary">
           {LINKS.map((link) => {
             const Icon = link.icon;
             return (
@@ -159,8 +159,8 @@ export function Navbar() {
                   clsx(
                     "flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all",
                     isActive
-                      ? "bg-[var(--color-surface-raised)] text-[var(--color-accent)] font-semibold border border-[var(--color-border)]"
-                      : "text-[var(--color-text-muted)]",
+                      ? "bg-(--color-surface-raised) text-(--color-accent) font-semibold border border-(--color-border)"
+                      : "text-(--color-text-muted)",
                   )
                 }
               >

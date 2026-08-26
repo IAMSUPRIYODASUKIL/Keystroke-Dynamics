@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+@theme {
+  --color-bg: var(--color-bg);
+  --color-bg-subtle: var(--color-bg-subtle);
+  --color-surface: var(--color-surface);
+  --color-surface-solid: var(--color-surface-solid);
+  --color-surface-raised: var(--color-surface-raised);
+  --color-surface-raised-solid: var(--color-surface-raised-solid);
+  --color-surface-highlight: var(--color-surface-highlight);
+  --color-border: var(--color-border);
+  --color-border-subtle: var(--color-border-subtle);
+  --color-border-glow: var(--color-border-glow);
+  
+  --color-text: var(--color-text);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-dim: var(--color-text-dim);
+  
+  --color-accent: var(--color-accent);
+  --color-accent-strong: var(--color-accent-strong);
+  --color-accent-secondary: var(--color-accent-secondary);
+  --color-accent-tertiary: var(--color-accent-tertiary);
+  
+  --color-success: var(--color-success);
+  --color-success-glow: var(--color-success-glow);
+  --color-warning: var(--color-warning);
+  --color-warning-glow: var(--color-warning-glow);
+  --color-danger: var(--color-danger);
+  --color-danger-glow: var(--color-danger-glow);
+
+  --font-mono-key: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
 :root {
   /* Default Dark Palette: "Obsidian Aurora" (Cosmic Void & Bioluminescent Cyan/Violet) */
   --color-bg: #050811;

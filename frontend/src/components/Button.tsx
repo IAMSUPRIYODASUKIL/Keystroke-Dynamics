@@ -30,23 +30,23 @@ export function Button({
 
         // Primary: Cyber-Luxe Cyan Gradient
         variant === "primary" &&
-          "shimmer-button bg-gradient-to-r from-[var(--color-accent)] to-[#00c6ff] text-[#04141a] font-semibold shadow-[0_0_20px_-3px_rgba(0,242,254,0.4)] hover:shadow-[0_0_25px_-2px_rgba(0,242,254,0.6)] hover:brightness-105",
+          "shimmer-button bg-linear-to-r from-(--color-accent) to-[#00c6ff] text-[#04141a] font-semibold shadow-[0_0_20px_-3px_rgba(0,242,254,0.4)] hover:shadow-[0_0_25px_-2px_rgba(0,242,254,0.6)] hover:brightness-105",
 
         // Secondary: Specular Glass Panel
         variant === "secondary" &&
-          "border border-[var(--color-border)] bg-[var(--color-surface-raised)] text-[var(--color-text)] hover:bg-[var(--color-surface-highlight)] hover:border-[var(--color-border-glow)] hover:shadow-md",
+          "border border-(--color-border) bg-(--color-surface-raised) text-(--color-text) hover:bg-(--color-surface-highlight) hover:border-(--color-border-glow) hover:shadow-md",
 
         // Danger: Ruby Rose Glow
         variant === "danger" &&
-          "border border-[var(--color-danger)]/40 bg-[var(--color-danger)]/15 text-[var(--color-danger)] hover:bg-[var(--color-danger)] hover:text-white hover:shadow-[0_0_20px_-3px_rgba(244,63,94,0.5)]",
+          "border border-(--color-danger)/40 bg-(--color-danger)/15 text-(--color-danger) hover:bg-(--color-danger) hover:text-white hover:shadow-[0_0_20px_-3px_rgba(244,63,94,0.5)]",
 
         // Ghost: Minimalist Glass
         variant === "ghost" &&
-          "text-[var(--color-text-muted)] hover:text-[var(--color-text)] hover:bg-[var(--color-surface-highlight)]",
+          "text-(--color-text-muted) hover:text-(--color-text) hover:bg-(--color-surface-highlight)",
 
         // Neon: Bioluminescent Emerald / Violet
         variant === "neon" &&
-          "shimmer-button bg-gradient-to-r from-[var(--color-accent-secondary)] to-[#d946ef] text-white font-semibold shadow-[0_0_20px_-3px_rgba(139,92,246,0.4)] hover:shadow-[0_0_25px_-2px_rgba(139,92,246,0.6)] hover:brightness-105",
+          "shimmer-button bg-linear-to-r from-(--color-accent-secondary) to-[#d946ef] text-white font-semibold shadow-[0_0_20px_-3px_rgba(139,92,246,0.4)] hover:shadow-[0_0_25px_-2px_rgba(139,92,246,0.6)] hover:brightness-105",
 
         className,
       )}

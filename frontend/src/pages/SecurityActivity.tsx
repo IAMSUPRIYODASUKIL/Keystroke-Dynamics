@@ -84,15 +84,15 @@ export function SecurityActivity() {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-[var(--color-text)] sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-(--color-text) sm:text-3xl">
               Security Audit Feed
             </h1>
-            <span className="inline-flex items-center gap-1 rounded-full border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/10 px-2.5 py-0.5 text-xs font-semibold text-[var(--color-accent)]">
+            <span className="inline-flex items-center gap-1 rounded-full border border-(--color-accent)/30 bg-(--color-accent)/10 px-2.5 py-0.5 text-xs font-semibold text-(--color-accent)">
               <History size={12} />
               Tamper-Evident Log
             </span>
           </div>
-          <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+          <p className="mt-1 text-sm text-(--color-text-muted)">
             Cryptographic and behavioral verification log for every authentication attempt against your identity.
           </p>
         </div>
@@ -139,20 +139,20 @@ export function SecurityActivity() {
         variant="glow"
         title={
           <div className="flex items-center gap-2">
-            <Activity size={18} className="text-[var(--color-accent)]" />
+            <Activity size={18} className="text-(--color-accent)" />
             <span>Attempt Telemetry History</span>
           </div>
         }
         subtitle="Chronological audit records with millisecond timestamps and multi-factor decision vectors"
         actions={
-          <div className="flex items-center gap-1.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)] p-1 text-xs">
+          <div className="flex items-center gap-1.5 rounded-xl border border-(--color-border) bg-(--color-surface-raised) p-1 text-xs">
             <button
               type="button"
               onClick={() => setFilter("all")}
               className={`rounded-lg px-2.5 py-1 font-medium transition-all ${
                 filter === "all"
-                  ? "bg-[var(--color-accent)]/15 text-[var(--color-accent)] font-semibold shadow-xs"
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                  ? "bg-(--color-accent)/15 text-(--color-accent) font-semibold shadow-xs"
+                  : "text-(--color-text-muted) hover:text-(--color-text)"
               }`}
             >
               All ({activity.attempts.length})
@@ -163,7 +163,7 @@ export function SecurityActivity() {
               className={`rounded-lg px-2.5 py-1 font-medium transition-all ${
                 filter === "success"
                   ? "bg-emerald-500/15 text-emerald-400 font-semibold shadow-xs"
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                  : "text-(--color-text-muted) hover:text-(--color-text)"
               }`}
             >
               Success ({activity.total_success})
@@ -174,7 +174,7 @@ export function SecurityActivity() {
               className={`rounded-lg px-2.5 py-1 font-medium transition-all ${
                 filter === "high_risk"
                   ? "bg-amber-500/15 text-amber-400 font-semibold shadow-xs"
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                  : "text-(--color-text-muted) hover:text-(--color-text)"
               }`}
             >
               Anomalies
@@ -188,10 +188,10 @@ export function SecurityActivity() {
             description="Clear filter or authenticate to generate fresh audit entries."
           />
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)]/60 backdrop-blur-md">
+          <div className="overflow-x-auto rounded-xl border border-(--color-border) bg-(--color-surface-raised)/60 backdrop-blur-md">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-[var(--color-border)] text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wider">
+                <tr className="border-b border-(--color-border) text-xs font-semibold text-(--color-text-muted) uppercase tracking-wider">
                   <th className="py-3 px-4">Timestamp</th>
                   <th className="py-3 px-4">Password State</th>
                   <th className="py-3 px-4">Biometric Cadence</th>
@@ -200,13 +200,13 @@ export function SecurityActivity() {
                   <th className="py-3 px-4 text-center">Consensus</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[var(--color-border)] text-xs font-mono">
+              <tbody className="divide-y divide-(--color-border) text-xs font-mono">
                 {filteredAttempts.map((attempt) => (
                   <tr
                     key={attempt.id}
-                    className="hover:bg-[var(--color-surface-highlight)] transition-colors"
+                    className="hover:bg-(--color-surface-highlight) transition-colors"
                   >
-                    <td className="py-3 px-4 whitespace-nowrap text-[var(--color-text-secondary)]">
+                    <td className="py-3 px-4 whitespace-nowrap text-(--color-text-secondary)">
                       {new Date(attempt.created_at).toLocaleString()}
                     </td>
                     <td className="py-3 px-4 font-sans">
@@ -216,14 +216,14 @@ export function SecurityActivity() {
                     </td>
                     <td className="py-3 px-4 font-sans">
                       {attempt.similarity_score !== null ? (
-                        <span className="font-semibold text-[var(--color-text)]">
+                        <span className="font-semibold text-(--color-text)">
                           {(attempt.similarity_score * 100).toFixed(0)}% Match
                         </span>
                       ) : (
-                        <span className="text-[var(--color-text-muted)]">Unscored</span>
+                        <span className="text-(--color-text-muted)">Unscored</span>
                       )}
                     </td>
-                    <td className="py-3 px-4 font-sans text-[var(--color-text-muted)]">
+                    <td className="py-3 px-4 font-sans text-(--color-text-muted)">
                       {attempt.method_used ? MODEL_LABELS[attempt.method_used] : "—"}
                     </td>
                     <td className="py-3 px-4 font-sans">
