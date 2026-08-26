@@ -19,7 +19,8 @@ export function Enroll() {
   const [boxKey, setBoxKey] = useState(0); // remounts PhraseTypingBox for a clean next sample
   const [isReady, setIsReady] = useState(false);
 
-  useEffect(() => {
+  const loadProfile = useCallback(() => {
+    setError(null);
     profileApi
       .get()
       .then((profile) => {
@@ -30,6 +31,10 @@ export function Enroll() {
       })
       .catch((err) => setError(friendlyErrorMessage(err)));
   }, []);
+
+  useEffect(() => {
+    loadProfile();
+  }, [loadProfile]);
 
   const handleComplete = useCallback(async (events: KeystrokeEvent[]) => {
     setIsSubmitting(true);
@@ -49,6 +54,17 @@ export function Enroll() {
   }, []);
 
   if (phrase === null && !error) return <PageLoader label="Loading your enrollment status…" />;
+
+  if (phrase === null && error) {
+    return (
+      <div className="mx-auto max-w-md">
+        <Alert variant="error">{error}</Alert>
+        <Button variant="secondary" className="mt-4 w-full" onClick={loadProfile}>
+          Retry
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-2xl">

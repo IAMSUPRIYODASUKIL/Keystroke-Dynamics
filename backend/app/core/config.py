@@ -37,7 +37,10 @@ class Settings(BaseSettings):
     AUTH_ENFORCEMENT_MODE: str = "strict"  # "strict" | "advisory"
 
     # CORS
-    CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
+    CORS_ORIGINS: str = (
+        "http://localhost:5173,http://127.0.0.1:5173,https://4lmbrvb7-5173.inc1.devtunnels.ms"
+    )
+    CORS_ORIGIN_REGEX: str = r"^https:\/\/.*\.devtunnels\.ms$"
 
     ENVIRONMENT: str = "development"
 

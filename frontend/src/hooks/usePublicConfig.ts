@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { publicApi } from "@/services/api";
+import { useCallback, useEffect, useState } from "react";
+import { publicApi, friendlyErrorMessage } from "@/services/api";
 
 interface PublicConfig {
   auth_phrase: string;
@@ -12,21 +12,24 @@ interface PublicConfig {
 export function usePublicConfig() {
   const [config, setConfig] = useState<PublicConfig | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    let cancelled = false;
-    publicApi
-      .config()
-      .then((data) => {
-        if (!cancelled) setConfig(data);
-      })
-      .catch(() => {
-        if (!cancelled) setError("Could not load server configuration.");
-      });
-    return () => {
-      cancelled = true;
-    };
+  const fetchConfig = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await publicApi.config();
+      setConfig(data);
+    } catch (err) {
+      setError(friendlyErrorMessage(err));
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  return { config, error, isLoading: config === null && error === null };
+  useEffect(() => {
+    fetchConfig();
+  }, [fetchConfig]);
+
+  return { config, error, isLoading, refetch: fetchConfig };
 }

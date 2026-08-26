@@ -19,7 +19,7 @@ export function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login: setSession } = useAuth();
-  const { config } = usePublicConfig();
+  const { config, error: configError, isLoading: isConfigLoading, refetch: refetchConfig } = usePublicConfig();
 
   const [step, setStep] = useState<Step>("credentials");
   const [email, setEmail] = useState("");
@@ -114,6 +114,27 @@ export function Login() {
           </form>
         )}
 
+        {step === "typing" && isConfigLoading && (
+          <div className="flex flex-col items-center justify-center py-8 gap-3">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--color-accent)] border-t-transparent" />
+            <p className="text-sm text-[var(--color-text-muted)]">Loading typing challenge…</p>
+          </div>
+        )}
+
+        {step === "typing" && !isConfigLoading && configError && !config && (
+          <div className="flex flex-col gap-4">
+            <Alert variant="error">{configError}</Alert>
+            <div className="flex gap-2">
+              <Button variant="secondary" onClick={() => refetchConfig()}>
+                Retry
+              </Button>
+              <Button variant="secondary" onClick={() => setStep("credentials")}>
+                ← Back to credentials
+              </Button>
+            </div>
+          </div>
+        )}
+
         {step === "typing" && config && (
           <div>
             <PhraseTypingBox
@@ -124,7 +145,7 @@ export function Login() {
             />
             <button
               type="button"
-              className="mt-4 text-xs text-[var(--color-text-muted)] underline underline-offset-2 hover:text-[var(--color-text)]"
+              className="mt-4 text-xs text-[var(--color-text-muted)] underline underline-offset-2 hover:text-[var(--color-text)] cursor-pointer"
               onClick={() => setStep("credentials")}
             >
               ← Back to credentials
