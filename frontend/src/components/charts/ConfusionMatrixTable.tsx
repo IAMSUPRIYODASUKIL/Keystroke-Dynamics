@@ -3,24 +3,31 @@ interface ConfusionMatrixTableProps {
   labels: string[];
 }
 
-// Sequential blue ramp (dataviz skill palette.md) used to shade cells by
-// magnitude — lightest step nearest the app's dark surface, darkest at max.
-const SEQUENTIAL_STEPS = ["#104281", "#184f95", "#1c5cab", "#256abf", "#2a78d6", "#3987e5", "#5598e7", "#6da7ec"];
+const SEQUENTIAL_STEPS = [
+  "rgba(14, 165, 233, 0.15)",
+  "rgba(14, 165, 233, 0.30)",
+  "rgba(14, 165, 233, 0.45)",
+  "rgba(14, 165, 233, 0.60)",
+  "rgba(14, 165, 233, 0.75)",
+  "rgba(14, 165, 233, 0.90)",
+  "#0284c7",
+  "#00f2fe",
+];
 
 export function ConfusionMatrixTable({ matrix, labels }: ConfusionMatrixTableProps) {
   const max = Math.max(1, ...matrix.flat());
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-separate border-spacing-1 text-sm">
+    <div className="overflow-x-auto pt-2">
+      <table className="w-full border-separate border-spacing-1.5 text-sm">
         <caption className="sr-only">Confusion matrix: rows are actual class, columns are predicted class.</caption>
         <thead>
           <tr>
-            <th scope="col" className="p-2 text-left text-xs font-medium text-[var(--color-text-muted)]">
-              Actual \ Predicted
+            <th scope="col" className="p-2 text-left text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
+              Actual \ Pred
             </th>
             {labels.map((label) => (
-              <th key={label} scope="col" className="p-2 text-xs font-medium text-[var(--color-text-muted)]">
+              <th key={label} scope="col" className="p-2 text-center text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">
                 {label}
               </th>
             ))}
@@ -29,7 +36,7 @@ export function ConfusionMatrixTable({ matrix, labels }: ConfusionMatrixTablePro
         <tbody>
           {matrix.map((row, i) => (
             <tr key={i}>
-              <th scope="row" className="p-2 text-left text-xs font-medium text-[var(--color-text-muted)]">
+              <th scope="row" className="p-2 text-left text-xs font-semibold text-[var(--color-text-secondary)]">
                 {labels[i]}
               </th>
               {row.map((value, j) => {
@@ -41,10 +48,13 @@ export function ConfusionMatrixTable({ matrix, labels }: ConfusionMatrixTablePro
                 return (
                   <td
                     key={j}
-                    className="rounded-md p-3 text-center font-semibold text-white"
-                    style={{ backgroundColor: value === 0 ? "var(--color-surface-raised)" : SEQUENTIAL_STEPS[stepIndex] }}
+                    className="rounded-xl p-3 text-center font-mono-key text-sm font-bold transition-all duration-200 border border-[var(--color-border)] shadow-xs"
+                    style={{
+                      backgroundColor: value === 0 ? "var(--color-surface-raised)" : SEQUENTIAL_STEPS[stepIndex],
+                      color: value === 0 ? "var(--color-text-muted)" : (stepIndex > 4 ? "#04141a" : "#ffffff"),
+                    }}
                   >
-                    <span className={value === 0 ? "text-[var(--color-text-muted)]" : ""}>{value}</span>
+                    <span>{value}</span>
                   </td>
                 );
               })}
@@ -55,3 +65,4 @@ export function ConfusionMatrixTable({ matrix, labels }: ConfusionMatrixTablePro
     </div>
   );
 }
+

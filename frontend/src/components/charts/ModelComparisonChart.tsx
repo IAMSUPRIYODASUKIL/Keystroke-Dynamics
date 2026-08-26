@@ -16,7 +16,7 @@ const METRIC_KEYS = [
   { key: "accuracy", label: "Accuracy" },
   { key: "precision", label: "Precision" },
   { key: "recall", label: "Recall" },
-  { key: "f1_score", label: "F1" },
+  { key: "f1_score", label: "F1 Score" },
 ] as const;
 
 export function ModelComparisonChart({ models }: ModelComparisonChartProps) {
@@ -29,40 +29,60 @@ export function ModelComparisonChart({ models }: ModelComparisonChartProps) {
   });
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={data} barGap={4} barCategoryGap={24}>
-        <CartesianGrid stroke="var(--color-border)" strokeDasharray="0" vertical={false} />
-        <XAxis dataKey="metric" stroke="var(--color-text-muted)" tickLine={false} axisLine={{ stroke: "var(--color-border)" }} />
-        <YAxis
-          stroke="var(--color-text-muted)"
-          tickLine={false}
-          axisLine={false}
-          unit="%"
-          domain={[0, 100]}
-        />
-        <Tooltip
-          contentStyle={{
-            background: "var(--color-surface-raised)",
-            border: "1px solid var(--color-border)",
-            borderRadius: 8,
-            color: "var(--color-text)",
-          }}
-          formatter={(value, name) => [`${value}%`, MODEL_LABELS[name as keyof typeof MODEL_LABELS] ?? name]}
-        />
-        <Legend
-          formatter={(value: string) => MODEL_LABELS[value as keyof typeof MODEL_LABELS] ?? value}
-          wrapperStyle={{ color: "var(--color-text-muted)", fontSize: 12 }}
-        />
-        {models.map((model) => (
-          <Bar
-            key={model.model_type}
-            dataKey={model.model_type}
-            fill={SERIES_COLOR[model.model_type] ?? "var(--series-rf)"}
-            radius={[4, 4, 0, 0]}
-            maxBarSize={36}
+    <div className="w-full pt-2">
+      <ResponsiveContainer width="100%" height={320}>
+        <BarChart data={data} barGap={6} barCategoryGap={28}>
+          <CartesianGrid stroke="var(--color-border-subtle)" strokeDasharray="3 3" vertical={false} />
+          <XAxis
+            dataKey="metric"
+            stroke="var(--color-text-muted)"
+            tickLine={false}
+            axisLine={{ stroke: "var(--color-border)" }}
+            tick={{ fill: "var(--color-text-muted)", fontSize: 12, fontWeight: 500 }}
           />
-        ))}
-      </BarChart>
-    </ResponsiveContainer>
+          <YAxis
+            stroke="var(--color-text-muted)"
+            tickLine={false}
+            axisLine={false}
+            unit="%"
+            domain={[0, 100]}
+            tick={{ fill: "var(--color-text-muted)", fontSize: 11 }}
+          />
+          <Tooltip
+            cursor={{ fill: "var(--color-surface-highlight)", opacity: 0.3 }}
+            contentStyle={{
+              background: "var(--color-surface-solid)",
+              border: "1px solid var(--color-border-glow)",
+              borderRadius: 12,
+              boxShadow: "0 10px 25px -5px rgba(0,0,0,0.5)",
+              color: "var(--color-text)",
+              padding: "10px 14px",
+            }}
+            formatter={(value, name) => [
+              `${value}%`,
+              MODEL_LABELS[name as keyof typeof MODEL_LABELS] ?? name,
+            ]}
+          />
+          <Legend
+            formatter={(value: string) => (
+              <span className="text-xs font-medium text-[var(--color-text-secondary)]">
+                {MODEL_LABELS[value as keyof typeof MODEL_LABELS] ?? value}
+              </span>
+            )}
+            wrapperStyle={{ paddingTop: 16 }}
+          />
+          {models.map((model) => (
+            <Bar
+              key={model.model_type}
+              dataKey={model.model_type}
+              fill={SERIES_COLOR[model.model_type] ?? "var(--series-rf)"}
+              radius={[6, 6, 0, 0]}
+              maxBarSize={38}
+            />
+          ))}
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 }
+

@@ -1,10 +1,21 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Sparkles,
+  Activity,
+  ArrowRight,
+  Fingerprint,
+  Cpu,
+  Clock,
+  Gauge,
+} from "lucide-react";
+import confetti from "canvas-confetti";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Alert } from "@/components/Alert";
 import { PageLoader } from "@/components/PageLoader";
 import { PhraseTypingBox } from "@/components/PhraseTypingBox";
+import { BiometricRadar } from "@/components/BiometricRadar";
 import { profileApi, typingApi, friendlyErrorMessage } from "@/services/api";
 import type { EnrollResponse, KeystrokeEvent } from "@/types";
 
@@ -16,7 +27,7 @@ export function Enroll() {
   const [lastResult, setLastResult] = useState<EnrollResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [boxKey, setBoxKey] = useState(0); // remounts PhraseTypingBox for a clean next sample
+  const [boxKey, setBoxKey] = useState(0);
   const [isReady, setIsReady] = useState(false);
 
   const loadProfile = useCallback(() => {
@@ -27,7 +38,20 @@ export function Enroll() {
         setPhrase(profile.auth_phrase);
         setSamplesCollected(profile.samples_collected);
         setMinRequired(profile.min_required);
-        setIsReady(profile.user.typing_profile_status === "ready");
+        const ready = profile.user.typing_profile_status === "ready";
+        setIsReady(ready);
+        if (ready) {
+          try {
+            confetti({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 },
+              colors: ["#00f2fe", "#4facfe", "#10b981", "#8b5cf6"],
+            });
+          } catch {
+            // ignore
+          }
+        }
       })
       .catch((err) => setError(friendlyErrorMessage(err)));
   }, []);
@@ -45,6 +69,19 @@ export function Enroll() {
       setSamplesCollected(result.samples_collected);
       setMinRequired(result.min_required);
       setIsReady(result.ready_for_authentication);
+
+      if (result.ready_for_authentication) {
+        try {
+          confetti({
+            particleCount: 120,
+            spread: 80,
+            origin: { y: 0.5 },
+            colors: ["#00f2fe", "#4facfe", "#10b981", "#8b5cf6", "#f59e0b"],
+          });
+        } catch {
+          // ignore
+        }
+      }
     } catch (err) {
       setError(friendlyErrorMessage(err));
     } finally {
@@ -53,7 +90,7 @@ export function Enroll() {
     }
   }, []);
 
-  if (phrase === null && !error) return <PageLoader label="Loading your enrollment status…" />;
+  if (phrase === null && !error) return <PageLoader label="Loading your enrollment calibration cockpit…" />;
 
   if (phrase === null && error) {
     return (
@@ -66,48 +103,87 @@ export function Enroll() {
     );
   }
 
+  const currentSampleNum = Math.min(samplesCollected + (isReady ? 0 : 1), Math.max(minRequired, 1));
+  const progressPercent = Math.min(100, (samplesCollected / Math.max(minRequired, 1)) * 100);
+
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="mb-6 text-center">
-        <h1 className="text-2xl font-semibold text-[var(--color-text)]">Let's learn your typing pattern</h1>
-        <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-          Type the sentence below naturally, {minRequired} times. We only record timing for keys inside
-          this phrase — nothing else you type anywhere else in the app is ever captured.
+    <div className="mx-auto max-w-2xl flex flex-col gap-6">
+      {/* Header */}
+      <div className="text-center">
+        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3.5 py-1 text-xs font-semibold text-[var(--color-accent)] backdrop-blur-md">
+          <Fingerprint size={13} />
+          <span>Biometric Rhythm Calibration</span>
+        </div>
+        <h1 className="text-2xl font-extrabold tracking-tight text-[var(--color-text)] sm:text-3xl">
+          Learn Your Unique Typing Rhythm
+        </h1>
+        <p className="mt-2 text-sm text-[var(--color-text-muted)] max-w-lg mx-auto leading-relaxed">
+          Type the exact challenge phrase {minRequired} times. We only extract microsecond cadence timing
+          for this phrase — nothing else you type is ever recorded.
         </p>
       </div>
 
-      {error && (
-        <div className="mb-4">
-          <Alert variant="error">{error}</Alert>
-        </div>
-      )}
+      {error && <Alert variant="error">{error}</Alert>}
 
-      <Card>
-        <div className="mb-4 flex items-center justify-between text-sm">
-          <span className="font-medium text-[var(--color-text)]">
-            Sample {Math.min(samplesCollected + (isReady ? 0 : 1), minRequired)} of {minRequired}
+      <Card variant="glow">
+        {/* Sample Progress Tracker Header */}
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-[var(--color-accent)]/15 font-mono text-xs font-bold text-[var(--color-accent)]">
+              {currentSampleNum}
+            </span>
+            <span className="font-semibold text-sm text-[var(--color-text)]">
+              Sample {currentSampleNum} of {minRequired}
+            </span>
+          </div>
+          <span className="font-mono text-xs font-medium text-[var(--color-text-muted)]">
+            {samplesCollected} of {minRequired} Captured ({Math.round(progressPercent)}%)
           </span>
-          <span className="text-[var(--color-text-muted)]">{samplesCollected} collected</span>
         </div>
 
-        <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-[var(--color-border)]">
-          <div
-            className="h-full rounded-full bg-[var(--color-accent)] transition-all"
-            style={{ width: `${Math.min(100, (samplesCollected / Math.max(minRequired, 1)) * 100)}%` }}
-          />
+        {/* Step Indicator Dots */}
+        <div className="mb-5 flex gap-1.5">
+          {Array.from({ length: Math.max(minRequired, 5) }).map((_, idx) => {
+            const isDone = idx < samplesCollected;
+            const isCurrent = idx === samplesCollected && !isReady;
+            return (
+              <div
+                key={idx}
+                className={`h-2 flex-1 rounded-full transition-all duration-300 ${
+                  isDone
+                    ? "bg-gradient-to-r from-teal-400 to-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                    : isCurrent
+                      ? "bg-[var(--color-accent)] animate-pulse shadow-[0_0_8px_rgba(0,242,254,0.5)]"
+                      : "bg-[var(--color-border)]"
+                }`}
+              />
+            );
+          })}
         </div>
 
         {isReady ? (
-          <div className="py-6 text-center">
-            <p className="text-lg font-semibold text-[var(--color-success)]">
-              Your typing profile is ready.
-            </p>
-            <p className="mt-2 text-sm text-[var(--color-text-muted)]">
-              {lastResult?.training_message ??
-                "Enough samples have been collected to evaluate your typing pattern."}
-            </p>
-            <Button className="mt-6" onClick={() => navigate("/dashboard")}>
-              Go to dashboard
+          <div className="flex flex-col items-center justify-center py-8 text-center gap-5 animate-fadeIn">
+            <div className="relative">
+              <BiometricRadar
+                score={1.0}
+                riskLevel="low"
+                size="lg"
+                label="Biometric Baseline Established"
+              />
+            </div>
+            <div className="max-w-md">
+              <p className="text-xl font-bold text-emerald-400">
+                Your Typing Profile Is Ready!
+              </p>
+              <p className="mt-2 text-xs text-[var(--color-text-muted)] leading-relaxed">
+                {lastResult?.training_message ??
+                  "Your 3-classifier ensemble has been trained. You can now use your typing cadence as a 2FA behavioral biometric."}
+              </p>
+            </div>
+            <Button size="lg" className="px-8 flex items-center gap-2" onClick={() => navigate("/dashboard")}>
+              <Sparkles size={16} />
+              <span>Continue to Command Dashboard</span>
+              <ArrowRight size={16} />
             </Button>
           </div>
         ) : (
@@ -121,34 +197,65 @@ export function Enroll() {
           )
         )}
 
+        {/* Live Feature Engineering Telemetry Breakdown */}
         {lastResult && !isReady && (
-          <div className="mt-4 grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
-            <MiniStat label="Dwell" value={`${lastResult.feature_summary.mean_dwell_ms.toFixed(0)} ms`} />
-            <MiniStat label="Flight" value={`${lastResult.feature_summary.mean_flight_ms.toFixed(0)} ms`} />
-            <MiniStat label="Speed" value={`${lastResult.feature_summary.typing_speed_cps.toFixed(1)} cps`} />
-            <MiniStat
-              label="Duration"
-              value={`${(lastResult.feature_summary.total_duration_ms / 1000).toFixed(1)} s`}
-            />
+          <div className="mt-6 pt-5 border-t border-[var(--color-border)]">
+            <div className="mb-3 flex items-center gap-2">
+              <Activity size={14} className="text-[var(--color-accent)]" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
+                Latest Keystroke Telemetry Vectors
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 text-center">
+              <MiniStat
+                icon={Clock}
+                label="Mean Dwell"
+                value={`${lastResult.feature_summary.mean_dwell_ms.toFixed(0)} ms`}
+              />
+              <MiniStat
+                icon={Activity}
+                label="Mean Flight"
+                value={`${lastResult.feature_summary.mean_flight_ms.toFixed(0)} ms`}
+              />
+              <MiniStat
+                icon={Gauge}
+                label="Typing Speed"
+                value={`${lastResult.feature_summary.typing_speed_cps.toFixed(1)} cps`}
+              />
+              <MiniStat
+                icon={Cpu}
+                label="Total Time"
+                value={`${(lastResult.feature_summary.total_duration_ms / 1000).toFixed(1)} s`}
+              />
+            </div>
           </div>
         )}
       </Card>
 
-      <p className="mt-4 text-center text-xs text-[var(--color-text-muted)]">
-        You can delete this typing profile at any time from your dashboard. See the privacy notice for
-        details on what is stored and why.
+      <p className="text-center text-xs text-[var(--color-text-muted)]">
+        You can retrain or delete this typing profile at any time from your dashboard.
       </p>
     </div>
   );
 }
 
-function MiniStat({ label, value }: { label: string; value: string }) {
+function MiniStat({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  label: string;
+  value: string;
+}) {
   return (
-    <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-raised)] px-2 py-3">
-      <p className="text-[10px] font-medium tracking-wide text-[var(--color-text-muted)] uppercase">
-        {label}
-      </p>
-      <p className="mt-1 text-sm font-semibold text-[var(--color-text)]">{value}</p>
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-raised)]/80 p-3 backdrop-blur-md">
+      <div className="flex items-center justify-center gap-1 text-[10px] font-semibold tracking-wider text-[var(--color-text-muted)] uppercase">
+        <Icon size={11} className="text-[var(--color-accent)]" />
+        <span>{label}</span>
+      </div>
+      <p className="mt-1 font-mono-key text-base font-bold text-[var(--color-text)]">{value}</p>
     </div>
   );
 }
+

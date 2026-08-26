@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { User, Mail, Lock, Sparkles, ArrowRight, Shield } from "lucide-react";
 import { Card } from "@/components/Card";
 import { FormField } from "@/components/FormField";
 import { Button } from "@/components/Button";
@@ -26,6 +27,26 @@ export function Register() {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Compute password strength score (0 to 4)
+  const passwordStrength = (() => {
+    if (!password) return 0;
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    return score;
+  })();
+
+  const strengthLabels = ["Too Weak", "Weak", "Fair", "Strong", "Military-Grade"];
+  const strengthColors = [
+    "bg-slate-600",
+    "bg-rose-500",
+    "bg-amber-500",
+    "bg-cyan-400",
+    "bg-emerald-400",
+  ];
 
   function validate(): boolean {
     const errors: FieldErrors = {};
@@ -60,52 +81,100 @@ export function Register() {
   }
 
   return (
-    <div className="mx-auto max-w-md">
-      <Card title="Create your account" subtitle="Something you know — your password.">
+    <div className="mx-auto max-w-lg">
+      <Card
+        variant="glow"
+        title={
+          <div className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[var(--color-accent)]/15 text-[var(--color-accent)]">
+              <Shield size={18} />
+            </span>
+            <span>Create Secure Profile</span>
+          </div>
+        }
+        subtitle="Establish your cryptographic identity before calibrating your typing rhythm."
+      >
         <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
           {formError && <Alert variant="error">{formError}</Alert>}
 
           <FormField
             label="Full name"
             autoComplete="name"
+            placeholder="Ada Lovelace"
+            icon={User}
             value={name}
             onChange={(e) => setName(e.target.value)}
             error={fieldErrors.name}
           />
           <FormField
-            label="Email"
+            label="Email Address"
             type="email"
             autoComplete="email"
+            placeholder="ada@computing.org"
+            icon={Mail}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             error={fieldErrors.email}
           />
           <FormField
-            label="Password"
+            label="Master Password"
             type="password"
             autoComplete="new-password"
+            placeholder="••••••••••••"
+            icon={Lock}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             error={fieldErrors.password}
           />
+
+          {/* Dynamic Password Strength Meter */}
+          {password.length > 0 && (
+            <div className="flex flex-col gap-1.5 px-1 animate-fadeIn">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-[var(--color-text-muted)]">Password Strength:</span>
+                <span className="font-semibold text-[var(--color-text)]">
+                  {strengthLabels[passwordStrength]}
+                </span>
+              </div>
+              <div className="flex gap-1 h-1.5 w-full overflow-hidden rounded-full bg-[var(--color-border)]">
+                {[1, 2, 3, 4].map((step) => (
+                  <div
+                    key={step}
+                    className={`h-full flex-1 rounded-full transition-all duration-300 ${
+                      passwordStrength >= step ? strengthColors[passwordStrength] : "bg-transparent"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
           <FormField
-            label="Confirm password"
+            label="Confirm Password"
             type="password"
             autoComplete="new-password"
+            placeholder="••••••••••••"
+            icon={Lock}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             error={fieldErrors.confirm_password}
           />
 
-          <Button type="submit" isLoading={isSubmitting} className="mt-2 w-full">
-            Create account
+          <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2 w-full flex items-center justify-center gap-2">
+            <Sparkles size={16} />
+            <span>Create Profile & Calibrate Biometrics</span>
+            <ArrowRight size={16} />
           </Button>
 
           <p className="text-center text-xs text-[var(--color-text-muted)]">
-            Next you'll type a short phrase a few times so we can learn your typing rhythm.
+            Already have an account?{" "}
+            <Link to="/login" className="text-[var(--color-accent)] font-medium underline underline-offset-2 hover:brightness-110">
+              Log in here
+            </Link>
           </p>
         </form>
       </Card>
     </div>
   );
 }
+
