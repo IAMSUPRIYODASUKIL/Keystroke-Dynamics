@@ -12,7 +12,7 @@ interface AuthShellProps {
 /** Split-screen frame for credential flows: brand story on the left (desktop), task on the right. */
 export function AuthShell({ eyebrow, headline, lead, points, children }: AuthShellProps) {
   return (
-    <div className="mx-auto grid max-w-6xl items-center gap-10 lg:min-h-[calc(100vh-14rem)] lg:grid-cols-[1fr_minmax(0,36rem)] lg:gap-16">
+    <div className="mx-auto grid max-w-6xl items-center gap-10 lg:min-h-[calc(100vh-14rem)] lg:grid-cols-[1fr_minmax(0,34rem)] xl:grid-cols-[1fr_minmax(0,40rem)] lg:gap-16">
       <aside className="relative hidden lg:block">
         <p className="font-mono text-[11px] tracking-[0.2em] text-(--color-accent) uppercase">{eyebrow}</p>
         <h1 className="font-display text-balance mt-5 text-6xl leading-[1.02] font-light tracking-tight text-(--color-text)">

@@ -76,6 +76,8 @@ export function PhraseTypingBox({ phrase, onComplete, disabled = false, onActivi
     return result;
   }, [phrase]);
 
+  const compact = phrase.length > 24;
+
   const stateAt = (index: number): KeycapState =>
     hasMismatch && index === typed.length
       ? "error"
@@ -149,12 +151,12 @@ export function PhraseTypingBox({ phrase, onComplete, disabled = false, onActivi
       >
         <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-linear-to-r from-transparent via-(--color-accent)/50 to-transparent" />
 
-        <div className="flex flex-wrap justify-center gap-x-2 gap-y-4 sm:gap-x-3 sm:gap-y-5">
+        <div className={compact ? "flex flex-wrap justify-center gap-x-1.5 gap-y-3 sm:gap-y-4" : "flex flex-wrap justify-center gap-x-2 gap-y-4 sm:gap-x-3 sm:gap-y-5"}>
           {groups.map((group) => (
-            <div key={group.start} className="flex gap-1.5 sm:gap-2">
+            <div key={group.start} className={compact ? "flex gap-1 sm:gap-1.5" : "flex gap-1.5 sm:gap-2"}>
               {group.text.split("").map((char, offset) => {
                 const index = group.start + offset;
-                return <Keycap key={index} char={char} state={stateAt(index)} focused={isFocused} />;
+                return <Keycap key={index} char={char} state={stateAt(index)} focused={isFocused} size={compact ? "compact" : "regular"} />;
               })}
             </div>
           ))}

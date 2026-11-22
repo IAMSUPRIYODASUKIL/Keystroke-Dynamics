@@ -125,7 +125,7 @@ export function Login() {
         { icon: ShieldCheck, title: "A decision you can inspect", body: "Every attempt is logged with its risk level." },
       ]}
     >
-    <div className="mx-auto w-full max-w-xl">
+    <div className="mx-auto w-full max-w-2xl">
       <Stepper
         className="mb-6 flex-wrap"
         current={stepIndex}

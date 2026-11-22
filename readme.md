@@ -97,7 +97,7 @@ entered before" — clearly explained to the end user, never presented as certai
 - A Demo Mode for live presentations: score a genuine vs. an impostor-style sample
   against your own profile without touching the real audit log
 - A privacy control to delete your collected typing samples and trained model at any time
-- A responsive, accessible, keyboard-first UI with a dark, professional aesthetic
+- A responsive, accessible, keyboard-first UI with a dark and light "Ember & Smoke" design system (see [docs/15_Design_System.md](docs/15_Design_System.md))
 
 ## Architecture
 
@@ -133,7 +133,7 @@ persisted as `.joblib` files under `ml/saved_models/`, referenced from the
 
 | Layer | Stack |
 |---|---|
-| Frontend | React 19, TypeScript, Vite, Tailwind CSS 4, React Router, Recharts, Vitest |
+| Frontend | React 19, TypeScript, Vite, Tailwind CSS 4, Motion, React Router, Recharts, Vitest |
 | Backend | Python, FastAPI, SQLAlchemy, Pydantic, python-jose (JWT), Passlib (Argon2) |
 | ML | scikit-learn, pandas, NumPy, joblib |
 | Database | PostgreSQL (via Docker) or SQLite (default, zero setup) |

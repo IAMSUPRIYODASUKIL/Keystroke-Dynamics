@@ -95,7 +95,7 @@
   --color-text: #f5efea;
   --color-text-secondary: #d6cbc3;
   --color-text-muted: #a89c94;
-  --color-text-dim: #7a6e67;
+  --color-text-dim: #8a7e77;
 
   /* Ember accents */
   --color-accent: #ff8a52;
@@ -168,23 +168,23 @@
   --color-text: #1c1311;
   --color-text-secondary: #4a3c37;
   --color-text-muted: #6b5e57;
-  --color-text-dim: #968982;
+  --color-text-dim: #716559;
 
   --color-accent: #b8431a;
   --color-accent-strong: #9a3412;
   --color-spark: #d97a45;
   --color-on-accent: #fffaf5;
-  --color-accent-gradient: linear-gradient(135deg, #b8431a 0%, #d2602f 100%);
+  --color-accent-gradient: linear-gradient(135deg, #a83a14 0%, #c24a1c 100%);
   --color-ember-gradient: linear-gradient(135deg, #9a3412 0%, #c4501f 55%, #e08046 100%);
   --color-coral-gradient: linear-gradient(135deg, #c0392b 0%, #b8431a 100%);
   --color-jade-gradient: linear-gradient(135deg, #0e7c5a 0%, #1fa07a 100%);
 
-  --color-success: #0e7c5a;
-  --color-success-glow: rgba(14, 124, 90, 0.14);
-  --color-warning: #9a5b00;
-  --color-warning-glow: rgba(154, 91, 0, 0.14);
-  --color-danger: #c0263e;
-  --color-danger-glow: rgba(192, 38, 62, 0.14);
+  --color-success: #0a6a4c;
+  --color-success-glow: rgba(10, 106, 76, 0.14);
+  --color-warning: #855000;
+  --color-warning-glow: rgba(133, 80, 0, 0.14);
+  --color-danger: #b61f38;
+  --color-danger-glow: rgba(182, 31, 56, 0.14);
 
   --series-rf: #c2481e;
   --series-svm: #2f6fd0;
