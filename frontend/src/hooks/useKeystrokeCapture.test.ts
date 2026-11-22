@@ -4,8 +4,8 @@ import { useKeystrokeCapture } from "./useKeystrokeCapture";
 
 const PHRASE = "hi";
 
-function fakeKeyEvent(key: string, repeat = false) {
-  return { key, repeat, preventDefault: vi.fn() } as unknown as React.KeyboardEvent<HTMLElement>;
+function fakeKeyEvent(key: string, repeat = false, code?: string) {
+  return { key, repeat, code, preventDefault: vi.fn() } as unknown as React.KeyboardEvent<HTMLElement>;
 }
 
 describe("useKeystrokeCapture", () => {
@@ -60,5 +60,32 @@ describe("useKeystrokeCapture", () => {
 
     expect(result.current.typed).toBe("");
     expect(result.current.events).toHaveLength(0);
+  });
+
+  it("pairs a keyup with its keydown even when Shift is released first (M -> m)", () => {
+    const { result } = renderHook(() => useKeystrokeCapture({ phrase: "Mi" }));
+
+    act(() => result.current.handleKeyDown(fakeKeyEvent("M", false, "KeyM")));
+    act(() => result.current.handleKeyUp(fakeKeyEvent("m", false, "KeyM"))); // Shift already up
+    act(() => result.current.handleKeyDown(fakeKeyEvent("i", false, "KeyI")));
+    act(() => result.current.handleKeyUp(fakeKeyEvent("i", false, "KeyI")));
+
+    expect(result.current.isComplete).toBe(true);
+    expect(result.current.events.map((e) => `${e.type}:${e.key}`)).toEqual([
+      "keydown:M", "keyup:M", "keydown:i", "keyup:i",
+    ]);
+  });
+
+  it("does not complete until the last key is released (rollover on the final keys)", () => {
+    const { result } = renderHook(() => useKeystrokeCapture({ phrase: "hi" }));
+
+    act(() => result.current.handleKeyDown(fakeKeyEvent("h", false, "KeyH")));
+    act(() => result.current.handleKeyDown(fakeKeyEvent("i", false, "KeyI")));
+    act(() => result.current.handleKeyUp(fakeKeyEvent("h", false, "KeyH")));
+    expect(result.current.isComplete).toBe(false);
+
+    act(() => result.current.handleKeyUp(fakeKeyEvent("i", false, "KeyI")));
+    expect(result.current.isComplete).toBe(true);
+    expect(result.current.events).toHaveLength(4);
   });
 });

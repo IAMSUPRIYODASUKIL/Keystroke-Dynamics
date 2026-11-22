@@ -59,6 +59,10 @@ export function useKeystrokeCapture({
 
   const startTimeRef = useRef<number | null>(null);
   const resetTimeoutRef = useRef<number | undefined>(undefined);
+  // Physical key (e.code) -> the character emitted on keydown. A keyup can report a
+  // different `key` than its keydown (release Shift before "M" and the keyup says "m"),
+  // which would leave the "M" press unpaired on the server.
+  const downKeysRef = useRef<Map<string, string>>(new Map());
 
   useEffect(() => () => window.clearTimeout(resetTimeoutRef.current), []);
 
@@ -69,6 +73,7 @@ export function useKeystrokeCapture({
     setIsComplete(false);
     setHasMismatch(false);
     startTimeRef.current = null;
+    downKeysRef.current.clear();
   }, []);
 
   const now = useCallback(() => {
@@ -101,6 +106,7 @@ export function useKeystrokeCapture({
       }
 
       e.preventDefault();
+      downKeysRef.current.set(e.code ?? e.key, e.key);
       const expected = phrase[typed.length];
       const t = now();
 
@@ -126,11 +132,18 @@ export function useKeystrokeCapture({
       if (e.key.length !== 1) return;
 
       e.preventDefault();
+      const codeId = e.code ?? e.key;
+      const downKey = downKeysRef.current.get(codeId);
+      if (downKey === undefined) return; // keyup for a press we never recorded
+      downKeysRef.current.delete(codeId);
       const t = now();
-      setEvents((prev) => [...prev, { key: e.key, type: "keyup" as const, t }]);
+      setEvents((prev) => [...prev, { key: downKey, type: "keyup" as const, t }]);
 
+      // Complete only once every pressed key has been released. With rollover the
+      // second-to-last key can be released after the last one is pressed; finishing
+      // on that keyup would drop the final keyup and the server would see a missing press.
       setTyped((prevTyped) => {
-        if (prevTyped.length === phrase.length) {
+        if (prevTyped.length === phrase.length && downKeysRef.current.size === 0) {
           setIsComplete(true);
         }
         return prevTyped;

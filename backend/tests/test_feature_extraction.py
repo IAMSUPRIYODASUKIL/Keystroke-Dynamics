@@ -66,18 +66,26 @@ def test_rejects_empty_events():
         validate_and_pair([], "a")
 
 
-def test_ignores_key_repeat_duplicate_keydowns():
-    # A held key fires multiple keydowns before its keyup (OS key-repeat) —
-    # the extra keydowns must be ignored rather than treated as extra presses.
+def test_same_key_rollover_is_two_presses():
+    # "tt" typed fast: second keydown arrives before the first keyup.
+    events = [
+        {"key": "t", "type": "keydown", "t": 0},
+        {"key": "t", "type": "keydown", "t": 60},
+        {"key": "t", "type": "keyup", "t": 80},
+        {"key": "t", "type": "keyup", "t": 140},
+    ]
+    presses = validate_and_pair(events, "tt")
+    assert [(p.down_t, p.up_t) for p in presses] == [(0, 80), (60, 140)]
+
+
+def test_leaked_key_repeat_is_rejected_not_miscounted():
     events = [
         {"key": "a", "type": "keydown", "t": 0},
-        {"key": "a", "type": "keydown", "t": 20},  # repeat — ignored
-        {"key": "a", "type": "keydown", "t": 40},  # repeat — ignored
+        {"key": "a", "type": "keydown", "t": 20},  # OS repeat that leaked through
         {"key": "a", "type": "keyup", "t": 90},
     ]
-    presses = validate_and_pair(events, "a")
-    assert len(presses) == 1
-    assert presses[0].down_t == 0
+    with pytest.raises(KeystrokeValidationError):
+        validate_and_pair(events, "a")
 
 
 def test_negative_flight_is_preserved_not_clamped():

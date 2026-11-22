@@ -59,9 +59,16 @@ class ExtractedFeatures:
 
 def _pair_events(raw_events: list[dict]) -> list[KeyPress]:
     """Pair keydown/keyup events into KeyPress records, in chronological
-    order. Defensive against duplicate keydowns from OS key-repeat (a
-    keydown for a key that is already "open" is ignored)."""
-    events = sorted(raw_events, key=lambda e: e["t"])
+    order.
+
+    Same-key "rollover" is legitimate: in "pattern" the second "t" is often
+    pressed before the first is released (down, down, up, up). Keydowns for a
+    key are therefore queued and paired first-in-first-out with its keyups.
+    OS key-repeat (``KeyboardEvent.repeat``) is filtered out by the client
+    before events are sent; if repeats do leak through, the press count no
+    longer matches the phrase and ``validate_and_pair`` rejects the sample,
+    which is the safe outcome. A keyup with no matching keydown is ignored."""
+    events = sorted(raw_events, key=lambda e: (e["t"], e["type"] != "keydown"))
     open_downs: dict[str, list[float]] = {}
     presses: list[KeyPress] = []
 
@@ -70,15 +77,10 @@ def _pair_events(raw_events: list[dict]) -> list[KeyPress]:
         etype = event["type"]
         t = float(event["t"])
         if etype == "keydown":
-            open_downs.setdefault(key, [])
-            if open_downs[key]:
-                # A keydown is already open for this key (key-repeat) — ignore.
-                continue
-            open_downs[key].append(t)
+            open_downs.setdefault(key, []).append(t)
         elif etype == "keyup":
             queue = open_downs.get(key)
             if not queue:
-                # Stray keyup with no matching keydown — ignore.
                 continue
             down_t = queue.pop(0)
             presses.append(KeyPress(key=key, down_t=down_t, up_t=t))
@@ -92,11 +94,13 @@ def validate_and_pair(raw_events: list[dict], expected_phrase: str) -> list[KeyP
         raise KeystrokeValidationError("No keystroke events were captured.")
 
     presses = _pair_events(raw_events)
+    keydowns = sum(1 for e in raw_events if e["type"] == "keydown")
 
-    if len(presses) != len(expected_phrase):
+    # A keydown with no keyup (e.g. a leaked OS key-repeat) means the capture is unreliable.
+    if keydowns != len(presses) or len(presses) != len(expected_phrase):
         raise KeystrokeValidationError(
             f"Expected {len(expected_phrase)} key presses for the phrase, "
-            f"got {len(presses)}. Please retype the phrase exactly, without "
+            f"got {keydowns}. Please retype the phrase exactly, without "
             f"corrections."
         )
 
