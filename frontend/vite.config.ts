@@ -13,6 +13,8 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    // Allow access through Microsoft Dev Tunnels (e.g. https://<id>-5173.<region>.devtunnels.ms)
+    allowedHosts: [".devtunnels.ms"],
   },
   test: {
     environment: "jsdom",

@@ -38,7 +38,7 @@ class Settings(BaseSettings):
 
     # CORS
     CORS_ORIGINS: str = (
-        "http://localhost:5173,http://127.0.0.1:5173,https://4lmbrvb7-5173.inc1.devtunnels.ms"
+        "http://localhost:5173,http://127.0.0.1:5173,https://mv1bxl8j-5173.inc1.devtunnels.ms"
     )
     CORS_ORIGIN_REGEX: str = r"^https:\/\/.*\.devtunnels\.ms$"
 
