@@ -1,11 +1,12 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User, Mail, Lock, Sparkles, ArrowRight, Shield } from "lucide-react";
+import { User, Mail, Lock, ArrowRight, Shield, KeyRound, Activity, Layers } from "lucide-react";
 import { Card } from "@/components/Card";
 import { FormField } from "@/components/FormField";
 import { Button } from "@/components/Button";
 import { Alert } from "@/components/Alert";
+import { AuthShell } from "@/components/AuthShell";
 import { authApi, friendlyErrorMessage } from "@/services/api";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -41,11 +42,11 @@ export function Register() {
 
   const strengthLabels = ["Too Weak", "Weak", "Fair", "Strong", "Military-Grade"];
   const strengthColors = [
-    "bg-slate-600",
-    "bg-rose-500",
-    "bg-amber-500",
-    "bg-cyan-400",
-    "bg-emerald-400",
+    "bg-(--color-text-dim)",
+    "bg-(--color-danger)",
+    "bg-(--color-warning)",
+    "bg-(--color-accent)",
+    "bg-(--color-success)",
   ];
 
   function validate(): boolean {
@@ -81,20 +82,34 @@ export function Register() {
   }
 
   return (
-    <div className="mx-auto max-w-lg">
+    <AuthShell
+      eyebrow="Create your profile"
+      headline={
+        <>
+          Teach it your <em className="ember-text pr-1 font-normal">rhythm</em>.
+        </>
+      }
+      lead="Set up a password, then type one short phrase a few times. The models learn the timing that makes it yours."
+      points={[
+        { icon: KeyRound, title: "Create a secure account", body: "Passwords are hashed, never stored." },
+        { icon: Activity, title: "Capture your cadence", body: "Type the phrase several times to build your profile." },
+        { icon: Layers, title: "Train three models", body: "Random Forest, SVM and Logistic Regression compete." },
+      ]}
+    >
       <Card
         variant="glow"
+        className="mx-auto w-full max-w-xl"
         title={
-          <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-(--color-accent)/15 text-(--color-accent)">
+          <div className="flex items-center gap-3">
+            <span className="keycap flex h-10 w-10 items-center justify-center rounded-xl text-(--color-accent)">
               <Shield size={18} />
             </span>
-            <span>Create Secure Profile</span>
+            <span>Create secure profile</span>
           </div>
         }
-        subtitle="Establish your cryptographic identity before calibrating your typing rhythm."
+        subtitle="Establish your identity before calibrating your typing rhythm."
       >
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit} noValidate>
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit} noValidate>
           {formError && <Alert variant="error">{formError}</Alert>}
 
           <FormField
@@ -127,23 +142,21 @@ export function Register() {
             error={fieldErrors.password}
           />
 
-          {/* Dynamic Password Strength Meter */}
+          {/* Password strength meter */}
           {password.length > 0 && (
-            <div className="flex flex-col gap-1.5 px-1 animate-fadeIn">
+            <div className="animate-fadeIn flex flex-col gap-2 px-1" role="status" aria-live="polite">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-(--color-text-muted)">Password Strength:</span>
-                <span className="font-semibold text-(--color-text)">
-                  {strengthLabels[passwordStrength]}
-                </span>
+                <span className="text-(--color-text-muted)">Password strength</span>
+                <span className="font-semibold text-(--color-text)">{strengthLabels[passwordStrength]}</span>
               </div>
-              <div className="flex gap-1 h-1.5 w-full overflow-hidden rounded-full bg-(--color-border)">
+              <div className="flex h-1.5 w-full gap-1.5">
                 {[1, 2, 3, 4].map((step) => (
-                  <div
-                    key={step}
-                    className={`h-full flex-1 rounded-full transition-all duration-300 ${
-                      passwordStrength >= step ? strengthColors[passwordStrength] : "bg-transparent"
-                    }`}
-                  />
+                  <div key={step} className="h-full flex-1 overflow-hidden rounded-full bg-(--color-border)">
+                    <div
+                      className={`h-full w-full origin-left rounded-full transition-transform duration-500 ease-(--ease-premium) ${strengthColors[passwordStrength]}`}
+                      style={{ transform: `scaleX(${passwordStrength >= step ? 1 : 0})` }}
+                    />
+                  </div>
                 ))}
               </div>
             </div>
@@ -160,21 +173,22 @@ export function Register() {
             error={fieldErrors.confirm_password}
           />
 
-          <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2 w-full flex items-center justify-center gap-2">
-            <Sparkles size={16} />
+          <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-2 w-full">
             <span>Create Profile & Calibrate Biometrics</span>
             <ArrowRight size={16} />
           </Button>
 
           <p className="text-center text-xs text-(--color-text-muted)">
             Already have an account?{" "}
-            <Link to="/login" className="text-(--color-accent) font-medium underline underline-offset-2 hover:brightness-110">
+            <Link
+              to="/login"
+              className="font-medium text-(--color-accent) underline underline-offset-4 hover:brightness-110"
+            >
               Log in here
             </Link>
           </p>
         </form>
       </Card>
-    </div>
+    </AuthShell>
   );
 }
-

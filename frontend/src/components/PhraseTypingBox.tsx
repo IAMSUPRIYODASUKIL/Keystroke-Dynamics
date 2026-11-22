@@ -161,7 +161,7 @@ export function PhraseTypingBox({ phrase, onComplete, disabled = false, onActivi
         </div>
 
         {!isFocused && !isComplete && (
-          <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-3xl bg-(--color-bg)/70 backdrop-blur-[3px]">
+          <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-3xl bg-(--color-bg)/45 backdrop-blur-[2px]">
             <span className="flex items-center gap-2.5 rounded-full border border-(--color-border) bg-(--color-surface-raised) px-5 py-2.5 text-xs font-semibold text-(--color-text) shadow-(--card-shadow) transition-colors hover:border-(--color-accent) hover:text-(--color-accent)">
               <Keyboard size={15} className="text-(--color-accent)" />
               Click here to focus and type the phrase

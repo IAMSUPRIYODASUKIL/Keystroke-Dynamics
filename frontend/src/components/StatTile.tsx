@@ -7,8 +7,7 @@ interface StatTileProps {
   value: ReactNode;
   hint?: string;
   icon?: ComponentType<{ size?: number; className?: string }>;
-  /** `cyan`, `violet` and `ember` are legacy names that all map to the ember accent family. */
-  accent?: "ember" | "cyan" | "emerald" | "violet" | "amber" | "rose" | "neutral";
+  accent?: "ember" | "emerald" | "amber" | "rose" | "neutral";
   className?: string;
 }
 
@@ -41,8 +40,8 @@ const ACCENTS = {
 };
 
 export function StatTile({ label, value, hint, icon: Icon, accent = "ember", className }: StatTileProps) {
-  const key = accent === "cyan" || accent === "violet" ? "ember" : accent;
-  const styles = ACCENTS[key];
+  const styles = ACCENTS[accent];
+  const hasDigits = /\d/.test(String(value));
 
   return (
     <div
@@ -74,7 +73,12 @@ export function StatTile({ label, value, hint, icon: Icon, accent = "ember", cla
         )}
       </div>
 
-      <p className="font-display mt-4 text-4xl font-medium tracking-tight text-(--color-text) tabular-nums sm:text-[2.75rem] sm:leading-none">
+      <p
+        className={clsx(
+          "font-display mt-4 font-medium tracking-tight text-(--color-text) tabular-nums",
+          hasDigits ? "text-4xl sm:text-[2.75rem] sm:leading-none" : "text-2xl sm:text-3xl sm:leading-tight",
+        )}
+      >
         {typeof value === "string" || typeof value === "number" ? <AnimatedNumber value={value} /> : value}
       </p>
 

@@ -20,9 +20,9 @@ import { SPRING } from "@/lib/motion";
 
 const LINKS = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/analytics", label: "ML Analytics", icon: BrainCircuit },
-  { to: "/activity", label: "Security Activity", icon: ShieldAlert },
-  { to: "/demo", label: "Demo Sandbox", icon: PlaySquare },
+  { to: "/analytics", label: "Analytics", icon: BrainCircuit },
+  { to: "/activity", label: "Activity", icon: ShieldAlert },
+  { to: "/demo", label: "Sandbox", icon: PlaySquare },
 ];
 
 export function Navbar() {
@@ -51,7 +51,7 @@ export function Navbar() {
                   to={to}
                   className={({ isActive }) =>
                     clsx(
-                      "relative flex items-center gap-2 rounded-full px-4 py-2 text-[13px] font-medium transition-colors duration-300",
+                      "relative flex items-center gap-2 rounded-full px-3.5 py-2 text-[13px] font-medium whitespace-nowrap transition-colors duration-300",
                       isActive ? "text-(--color-text)" : "text-(--color-text-muted) hover:text-(--color-text)",
                     )
                   }
@@ -91,11 +91,11 @@ export function Navbar() {
 
             {isAuthenticated ? (
               <div className="flex items-center gap-2 pl-1">
-                <div className="hidden items-center gap-2 rounded-full border border-(--color-border) bg-(--color-bg-subtle) py-1 pr-3.5 pl-1 shadow-(--field-shadow) md:flex">
+                <div className="hidden items-center gap-2 rounded-full border border-(--color-border) bg-(--color-bg-subtle) py-1 pr-1 pl-1 shadow-(--field-shadow) md:flex xl:pr-3.5">
                   <div className="flex h-7 w-7 items-center justify-center rounded-full bg-(image:--color-accent-gradient) text-xs font-bold text-(--color-on-accent)">
                     {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
                   </div>
-                  <span className="max-w-[110px] truncate text-xs font-medium text-(--color-text)">{user?.name}</span>
+                  <span className="hidden max-w-[110px] truncate text-xs font-medium text-(--color-text) xl:inline">{user?.name}</span>
                 </div>
                 <Button
                   variant="secondary"
@@ -113,7 +113,7 @@ export function Navbar() {
               </div>
             ) : (
               <div className="flex items-center gap-1.5 pl-1">
-                <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="rounded-full! px-4!">
+                <Button variant="ghost" size="sm" onClick={() => navigate("/login")} className="max-sm:hidden rounded-full! px-4!">
                   Log in
                 </Button>
                 <Button size="sm" onClick={() => navigate("/register")} className="rounded-full! px-4! py-2!">

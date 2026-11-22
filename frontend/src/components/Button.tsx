@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from "react";
 import clsx from "clsx";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "danger" | "ghost" | "neon";
+  variant?: "primary" | "secondary" | "danger" | "ghost";
   size?: "sm" | "md" | "lg";
   isLoading?: boolean;
 }
@@ -47,10 +47,6 @@ export function Button({
         // Ghost
         variant === "ghost" &&
           "text-(--color-text-muted) hover:text-(--color-text) hover:bg-(--color-surface-highlight)",
-
-        // Neon (legacy name) — coral accent
-        variant === "neon" &&
-          "shimmer-button bg-(image:--color-coral-gradient) text-(--on-danger) font-semibold shadow-[inset_0_1px_0_rgba(255,255,255,0.3),0_10px_24px_-10px_color-mix(in_oklab,var(--color-danger)_60%,transparent)] hover:brightness-[1.06]",
 
         className,
       )}

@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useLocation, useOutlet } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { Navbar } from "@/components/Navbar";
 import { BrandMark } from "@/components/BrandMark";
+import { PageLoader } from "@/components/PageLoader";
 import { useAuth } from "@/hooks/useAuth";
 import { pageTransition } from "@/lib/motion";
 
@@ -47,7 +48,7 @@ export function AppLayout() {
             animate={pageTransition.animate}
             exit={pageTransition.exit}
           >
-            {outlet}
+            <Suspense fallback={<PageLoader />}>{outlet}</Suspense>
           </motion.div>
         </AnimatePresence>
       </main>

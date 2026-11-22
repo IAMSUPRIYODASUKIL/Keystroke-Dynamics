@@ -1,4 +1,5 @@
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { TOOLTIP_CURSOR, TOOLTIP_STYLE } from "@/components/charts/theme";
 import type { ModelMetrics } from "@/types";
 import { MODEL_LABELS } from "@/utils/format";
 
@@ -49,15 +50,8 @@ export function ModelComparisonChart({ models }: ModelComparisonChartProps) {
             tick={{ fill: "var(--color-text-muted)", fontSize: 11 }}
           />
           <Tooltip
-            cursor={{ fill: "var(--color-surface-highlight)", opacity: 0.3 }}
-            contentStyle={{
-              background: "var(--color-surface-solid)",
-              border: "1px solid var(--color-border-glow)",
-              borderRadius: 12,
-              boxShadow: "0 10px 25px -5px rgba(0,0,0,0.5)",
-              color: "var(--color-text)",
-              padding: "10px 14px",
-            }}
+            cursor={TOOLTIP_CURSOR}
+            contentStyle={TOOLTIP_STYLE}
             formatter={(value, name) => [
               `${value}%`,
               MODEL_LABELS[name as keyof typeof MODEL_LABELS] ?? name,

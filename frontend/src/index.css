@@ -54,6 +54,17 @@
     }
   }
 
+  @keyframes barIn {
+    from {
+      transform: scaleY(0);
+      opacity: 0;
+    }
+    to {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+
   @keyframes float {
     0%,
     100% {
@@ -89,17 +100,12 @@
   /* Ember accents */
   --color-accent: #ff8a52;
   --color-accent-strong: #e8622c;
-  --color-accent-secondary: #ffb98a;
-  --color-accent-tertiary: #c9a08a;
   --color-spark: #ffd2a8;
   --color-on-accent: #1a0e08;
   --color-accent-gradient: linear-gradient(135deg, #e8622c 0%, #ff9a62 100%);
   --color-ember-gradient: linear-gradient(135deg, #e8622c 0%, #ff9a62 55%, #ffd2a8 100%);
   --color-coral-gradient: linear-gradient(135deg, #ff6b5a 0%, #e8622c 100%);
   --color-jade-gradient: linear-gradient(135deg, #34c79a 0%, #8be0c0 100%);
-  /* legacy aliases (removed once every component migrates) */
-  --color-purple-gradient: var(--color-coral-gradient);
-  --color-emerald-gradient: var(--color-jade-gradient);
 
   /* Status */
   --color-success: #6ed3a8;
@@ -166,8 +172,6 @@
 
   --color-accent: #b8431a;
   --color-accent-strong: #9a3412;
-  --color-accent-secondary: #d2602f;
-  --color-accent-tertiary: #8a6a58;
   --color-spark: #d97a45;
   --color-on-accent: #fffaf5;
   --color-accent-gradient: linear-gradient(135deg, #b8431a 0%, #d2602f 100%);
@@ -304,25 +308,8 @@ html.theme-transition *::after {
   text-wrap: balance;
 }
 
-.ember-text,
-.gradient-text-cyan {
+.ember-text {
   background: var(--color-ember-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-
-.gradient-text-purple {
-  background: var(--color-coral-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-
-.gradient-text-emerald {
-  background: var(--color-jade-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -401,23 +388,6 @@ html.theme-transition *::after {
   z-index: 60;
   opacity: var(--grain-opacity);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* ---------- Glow helpers (legacy names kept; now ember / status coloured) ---------- */
-.glow-cyan {
-  box-shadow: 0 0 32px -6px color-mix(in oklab, var(--color-accent) 45%, transparent);
-}
-.glow-emerald {
-  box-shadow: 0 0 28px -6px var(--color-success-glow);
-}
-.glow-violet {
-  box-shadow: 0 0 28px -6px color-mix(in oklab, var(--color-accent-strong) 40%, transparent);
-}
-.glow-rose {
-  box-shadow: 0 0 28px -6px var(--color-danger-glow);
-}
-.glow-text-cyan {
-  text-shadow: 0 0 18px color-mix(in oklab, var(--color-accent) 55%, transparent);
 }
 
 /* ---------- Ambient / motion keyframes ---------- */
@@ -507,13 +477,6 @@ html.theme-transition *::after {
 .animate-aurora-b {
   animation: aurora-drift-b 32s ease-in-out infinite;
   will-change: transform;
-}
-/* legacy ambient names */
-.animate-ambient-1 {
-  animation: aurora-drift-a 26s ease-in-out infinite;
-}
-.animate-ambient-2 {
-  animation: aurora-drift-b 32s ease-in-out infinite;
 }
 .animate-pulse-ring {
   animation: ember-pulse 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;

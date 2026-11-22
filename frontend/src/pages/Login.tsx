@@ -2,7 +2,19 @@ import { useCallback, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import type { Location } from "react-router-dom";
-import { Mail, Lock, ShieldCheck, ArrowRight, Sparkles, RefreshCw, KeyRound, Activity } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  ShieldCheck,
+  ArrowRight,
+  Sparkles,
+  RefreshCw,
+  KeyRound,
+  Activity,
+  Fingerprint,
+  Check,
+  X,
+} from "lucide-react";
 import confetti from "canvas-confetti";
 import { Card } from "@/components/Card";
 import { FormField } from "@/components/FormField";
@@ -11,6 +23,9 @@ import { Alert } from "@/components/Alert";
 import { PhraseTypingBox } from "@/components/PhraseTypingBox";
 import { RiskBadge, DecisionBadge } from "@/components/Badge";
 import { BiometricRadar } from "@/components/BiometricRadar";
+import { AuthShell } from "@/components/AuthShell";
+import { Stepper } from "@/components/Stepper";
+import { CadenceTrace } from "@/components/CadenceTrace";
 import { authApi, friendlyErrorMessage } from "@/services/api";
 import { useAuth } from "@/hooks/useAuth";
 import { usePublicConfig } from "@/hooks/usePublicConfig";
@@ -57,7 +72,7 @@ export function Login() {
               particleCount: 75,
               spread: 60,
               origin: { y: 0.6 },
-              colors: ["#00f2fe", "#4facfe", "#10b981", "#8b5cf6"],
+              colors: ["#e8622c", "#ff9a62", "#ffd2a8", "#6ed3a8", "#f5efea"],
             });
           } catch {
             // ignore
@@ -93,43 +108,33 @@ export function Login() {
 
   const from = (location.state as { from?: Location })?.from?.pathname ?? "/dashboard";
 
+  const stepIndex = step === "credentials" ? 0 : step === "typing" ? 1 : 2;
+
   return (
-    <div className="mx-auto max-w-lg">
-      {/* Step Progression Indicators */}
-      <div className="mb-6 flex items-center justify-center gap-2">
-        <div
-          className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-            step === "credentials"
-              ? "bg-(--color-accent)/15 text-(--color-accent) border border-(--color-accent)/30 shadow-xs"
-              : "bg-(--color-surface) text-(--color-text-muted) border border-(--color-border)"
-          }`}
-        >
-          <KeyRound size={12} />
-          <span>1. Password</span>
-        </div>
-        <div className="h-0.5 w-4 bg-(--color-border)" />
-        <div
-          className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-            step === "typing"
-              ? "bg-(--color-accent)/15 text-(--color-accent) border border-(--color-accent)/30 shadow-xs"
-              : "bg-(--color-surface) text-(--color-text-muted) border border-(--color-border)"
-          }`}
-        >
-          <Activity size={12} />
-          <span>2. Rhythm Challenge</span>
-        </div>
-        <div className="h-0.5 w-4 bg-(--color-border)" />
-        <div
-          className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all ${
-            step === "result"
-              ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-xs"
-              : "bg-(--color-surface) text-(--color-text-muted) border border-(--color-border)"
-          }`}
-        >
-          <ShieldCheck size={12} />
-          <span>3. Verification</span>
-        </div>
-      </div>
+    <AuthShell
+      eyebrow="Two-factor sign in"
+      headline={
+        <>
+          Welcome <em className="ember-text pr-1 font-normal">back</em>.
+        </>
+      }
+      lead="Prove what you know with your password, then prove who you are by typing a single sentence."
+      points={[
+        { icon: KeyRound, title: "Something you know", body: "Your password is verified first." },
+        { icon: Fingerprint, title: "Something about how you type", body: "Dwell and flight timing are scored in real time." },
+        { icon: ShieldCheck, title: "A decision you can inspect", body: "Every attempt is logged with its risk level." },
+      ]}
+    >
+    <div className="mx-auto w-full max-w-xl">
+      <Stepper
+        className="mb-6 flex-wrap"
+        current={stepIndex}
+        steps={[
+          { label: "Password", icon: KeyRound },
+          { label: "Rhythm", icon: Activity },
+          { label: "Verified", icon: ShieldCheck },
+        ]}
+      />
 
       <Card
         variant="glow"
@@ -165,14 +170,14 @@ export function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            <Button type="submit" size="lg" className="mt-2 w-full flex items-center justify-center gap-2">
+            <Button type="submit" size="lg" className="mt-2 w-full">
               <span>Continue</span>
               <ArrowRight size={16} />
             </Button>
 
             <p className="text-center text-xs text-(--color-text-muted)">
               Don't have an enrolled biometric account?{" "}
-              <Link to="/register" className="text-(--color-accent) font-medium underline underline-offset-2 hover:brightness-110">
+              <Link to="/register" className="font-medium text-(--color-accent) underline underline-offset-4 hover:brightness-110">
                 Register here
               </Link>
             </p>
@@ -180,10 +185,12 @@ export function Login() {
         )}
 
         {step === "typing" && isConfigLoading && (
-          <div className="flex flex-col items-center justify-center py-10 gap-3 text-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-(--color-accent) border-t-transparent" />
-            <p className="text-sm font-medium text-(--color-text)">Retrieving Challenge Phrase…</p>
-            <p className="text-xs text-(--color-text-muted)">Connecting to cryptographic auth pipeline</p>
+          <div role="status" className="flex flex-col items-center justify-center gap-3 py-10 text-center">
+            <div aria-hidden="true" className="h-12 w-48">
+              <CadenceTrace seed={3} points={18} className="h-full w-full" />
+            </div>
+            <p className="text-sm font-medium text-(--color-text)">Retrieving challenge phrase…</p>
+            <p className="text-xs text-(--color-text-muted)">Connecting to the authentication pipeline</p>
           </div>
         )}
 
@@ -212,7 +219,7 @@ export function Login() {
             <div className="flex items-center justify-between pt-2">
               <button
                 type="button"
-                className="text-xs font-medium text-(--color-text-muted) underline underline-offset-2 hover:text-(--color-text) cursor-pointer"
+                className="cursor-pointer text-xs font-medium text-(--color-text-muted) underline underline-offset-4 transition-colors hover:text-(--color-text)"
                 onClick={() => setStep("credentials")}
               >
                 ← Back to credentials
@@ -220,7 +227,7 @@ export function Login() {
               <button
                 type="button"
                 onClick={() => setBoxKey((k) => k + 1)}
-                className="flex items-center gap-1 text-xs text-(--color-accent) hover:underline cursor-pointer"
+                className="flex cursor-pointer items-center gap-1.5 text-xs font-medium text-(--color-accent) hover:underline hover:underline-offset-4"
               >
                 <RefreshCw size={12} />
                 Restart Phrase
@@ -248,8 +255,15 @@ export function Login() {
 
             <dl className="grid grid-cols-2 gap-3 text-sm">
               <Field label="Password Verification">
-                <span className={result.password_correct ? "text-emerald-400 font-semibold" : "text-rose-400 font-semibold"}>
-                  {result.password_correct ? "✓ Verified Correct" : "✗ Invalid Password"}
+                <span
+                  className={
+                    result.password_correct
+                      ? "flex items-center gap-1.5 font-semibold text-(--color-success)"
+                      : "flex items-center gap-1.5 font-semibold text-(--color-danger)"
+                  }
+                >
+                  {result.password_correct ? <Check size={14} /> : <X size={14} />}
+                  {result.password_correct ? "Verified Correct" : "Invalid Password"}
                 </span>
               </Field>
               <Field label="Keystroke Cadence">
@@ -264,7 +278,7 @@ export function Login() {
             </Alert>
 
             {result.decision === "success" ? (
-              <Button size="lg" onClick={() => navigate(from, { replace: true })} className="w-full flex items-center justify-center gap-2">
+              <Button size="lg" onClick={() => navigate(from, { replace: true })} className="w-full">
                 <Sparkles size={16} />
                 <span>Enter Security Dashboard</span>
                 <ArrowRight size={16} />
@@ -285,16 +299,15 @@ export function Login() {
         )}
       </Card>
     </div>
+    </AuthShell>
   );
 }
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="rounded-xl border border-(--color-border) bg-(--color-surface-raised)/90 px-3.5 py-2.5 backdrop-blur-md">
-      <dt className="text-[10px] font-semibold tracking-wider text-(--color-text-muted) uppercase">
-        {label}
-      </dt>
-      <dd className="mt-0.5 font-medium text-(--color-text)">{children}</dd>
+    <div className="rounded-2xl border border-(--color-border) bg-(--color-bg-subtle) px-4 py-3 shadow-(--field-shadow)">
+      <dt className="text-[10px] font-semibold tracking-[0.14em] text-(--color-text-muted) uppercase">{label}</dt>
+      <dd className="mt-1 text-sm font-medium text-(--color-text)">{children}</dd>
     </div>
   );
 }

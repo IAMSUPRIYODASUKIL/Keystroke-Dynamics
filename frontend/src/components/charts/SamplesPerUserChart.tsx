@@ -1,4 +1,5 @@
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { TOOLTIP_CURSOR, TOOLTIP_STYLE } from "@/components/charts/theme";
 
 export function SamplesPerUserChart({ samplesPerUser }: { samplesPerUser: Record<string, number> }) {
   const data = Object.entries(samplesPerUser).map(([name, count]) => ({ name, count }));
@@ -23,15 +24,8 @@ export function SamplesPerUserChart({ samplesPerUser }: { samplesPerUser: Record
             tick={{ fill: "var(--color-text-muted)", fontSize: 11 }}
           />
           <Tooltip
-            cursor={{ fill: "var(--color-surface-highlight)", opacity: 0.3 }}
-            contentStyle={{
-              background: "var(--color-surface-solid)",
-              border: "1px solid var(--color-border-glow)",
-              borderRadius: 12,
-              boxShadow: "0 10px 25px -5px rgba(0,0,0,0.5)",
-              color: "var(--color-text)",
-              padding: "10px 14px",
-            }}
+            cursor={TOOLTIP_CURSOR}
+            contentStyle={TOOLTIP_STYLE}
             formatter={(value) => [`${value} samples`, "Enrolled Data"]}
           />
           <Bar

@@ -1,23 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Sparkles,
-  Activity,
-  ArrowRight,
-  Fingerprint,
-  Cpu,
-  Clock,
-  Gauge,
-} from "lucide-react";
+import { Activity, ArrowRight, Fingerprint, Cpu, Clock, Gauge, Check } from "lucide-react";
 import confetti from "canvas-confetti";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { Alert } from "@/components/Alert";
 import { PageLoader } from "@/components/PageLoader";
 import { PhraseTypingBox } from "@/components/PhraseTypingBox";
-import { BiometricRadar } from "@/components/BiometricRadar";
+import { AnimatedNumber } from "@/components/AnimatedNumber";
 import { profileApi, typingApi, friendlyErrorMessage } from "@/services/api";
 import type { EnrollResponse, KeystrokeEvent } from "@/types";
+
+const CONFETTI_COLORS = ["#e8622c", "#ff9a62", "#ffd2a8", "#6ed3a8", "#f5efea"];
 
 export function Enroll() {
   const navigate = useNavigate();
@@ -42,12 +36,7 @@ export function Enroll() {
         setIsReady(ready);
         if (ready) {
           try {
-            confetti({
-              particleCount: 100,
-              spread: 70,
-              origin: { y: 0.6 },
-              colors: ["#00f2fe", "#4facfe", "#10b981", "#8b5cf6"],
-            });
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: CONFETTI_COLORS });
           } catch {
             // ignore
           }
@@ -72,12 +61,7 @@ export function Enroll() {
 
       if (result.ready_for_authentication) {
         try {
-          confetti({
-            particleCount: 120,
-            spread: 80,
-            origin: { y: 0.5 },
-            colors: ["#00f2fe", "#4facfe", "#10b981", "#8b5cf6", "#f59e0b"],
-          });
+          confetti({ particleCount: 120, spread: 80, origin: { y: 0.5 }, colors: CONFETTI_COLORS });
         } catch {
           // ignore
         }
@@ -90,7 +74,7 @@ export function Enroll() {
     }
   }, []);
 
-  if (phrase === null && !error) return <PageLoader label="Loading your enrollment calibration cockpit…" />;
+  if (phrase === null && !error) return <PageLoader label="Loading your calibration studio…" />;
 
   if (phrase === null && error) {
     return (
@@ -107,106 +91,112 @@ export function Enroll() {
   const progressPercent = Math.min(100, (samplesCollected / Math.max(minRequired, 1)) * 100);
 
   return (
-    <div className="mx-auto max-w-2xl flex flex-col gap-6">
+    <div className="mx-auto flex max-w-3xl flex-col gap-8">
       {/* Header */}
       <div className="text-center">
-        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3.5 py-1 text-xs font-semibold text-(--color-accent) backdrop-blur-md">
+        <div className="glass-pill mb-5 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold text-(--color-accent)">
           <Fingerprint size={13} />
-          <span>Biometric Rhythm Calibration</span>
+          <span className="font-mono tracking-[0.16em] uppercase">Rhythm calibration</span>
         </div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-(--color-text) sm:text-3xl">
-          Learn Your Unique Typing Rhythm
+        <h1 className="font-display text-balance text-4xl leading-[1.05] font-light tracking-tight text-(--color-text) sm:text-6xl">
+          Learn your <em className="ember-text pr-1 font-normal">unique rhythm</em>
         </h1>
-        <p className="mt-2 text-sm text-(--color-text-muted) max-w-lg mx-auto leading-relaxed">
-          Type the exact challenge phrase {minRequired} times. We only extract microsecond cadence timing
-          for this phrase — nothing else you type is ever recorded.
+        <p className="mx-auto mt-5 max-w-lg text-sm leading-relaxed text-(--color-text-muted) sm:text-base">
+          Type the exact challenge phrase {minRequired} times. Only cadence timing for this phrase is extracted —
+          nothing else you type is ever recorded.
         </p>
       </div>
 
       {error && <Alert variant="error">{error}</Alert>}
 
       <Card variant="glow">
-        {/* Sample Progress Tracker Header */}
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-(--color-accent)/15 font-mono text-xs font-bold text-(--color-accent)">
+        {/* Sample progress */}
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="keycap flex h-9 w-9 items-center justify-center rounded-xl font-mono text-sm font-bold text-(--color-accent)">
               {currentSampleNum}
             </span>
-            <span className="font-semibold text-sm text-(--color-text)">
+            <span className="text-sm font-semibold text-(--color-text)">
               Sample {currentSampleNum} of {minRequired}
             </span>
           </div>
-          <span className="font-mono text-xs font-medium text-(--color-text-muted)">
-            {samplesCollected} of {minRequired} Captured ({Math.round(progressPercent)}%)
+          <span className="font-mono text-xs font-medium text-(--color-text-muted) tabular-nums">
+            {samplesCollected} / {minRequired} captured · {Math.round(progressPercent)}%
           </span>
         </div>
 
-        {/* Step Indicator Dots */}
-        <div className="mb-5 flex gap-1.5">
+        <div
+          className="mb-7 flex gap-1.5"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={Math.max(minRequired, 1)}
+          aria-valuenow={samplesCollected}
+          aria-label="Samples captured"
+        >
           {Array.from({ length: Math.max(minRequired, 5) }).map((_, idx) => {
             const isDone = idx < samplesCollected;
             const isCurrent = idx === samplesCollected && !isReady;
             return (
               <div
                 key={idx}
-                className={`h-2 flex-1 rounded-full transition-all duration-300 ${
-                  isDone
-                    ? "bg-linear-to-r from-teal-400 to-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
-                    : isCurrent
-                      ? "bg-(--color-accent) animate-pulse shadow-[0_0_8px_rgba(0,242,254,0.5)]"
-                      : "bg-(--color-border)"
-                }`}
-              />
+                className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-border) shadow-(--field-shadow)"
+              >
+                <div
+                  className={`h-full w-full origin-left rounded-full transition-transform duration-500 ease-(--ease-premium) ${
+                    isDone
+                      ? "bg-(image:--color-ember-gradient)"
+                      : isCurrent
+                        ? "animate-pulse bg-(--color-accent)/50"
+                        : ""
+                  }`}
+                  style={{ transform: `scaleX(${isDone || isCurrent ? 1 : 0})` }}
+                />
+              </div>
             );
           })}
         </div>
 
         {isReady ? (
-          <div className="flex flex-col items-center justify-center py-8 text-center gap-5 animate-fadeIn">
-            <div className="relative">
-              <BiometricRadar
-                score={1.0}
-                riskLevel="low"
-                size="lg"
-                label="Biometric Baseline Established"
+          <div className="animate-fadeIn flex flex-col items-center justify-center gap-6 py-8 text-center">
+            <div className="relative flex h-28 w-28 items-center justify-center">
+              <span
+                aria-hidden="true"
+                className="absolute inset-0 rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--color-success)_30%,transparent),transparent)]"
               />
+              <span className="keycap relative flex h-20 w-20 items-center justify-center rounded-3xl text-(--color-success)">
+                <Check size={36} strokeWidth={2.5} />
+              </span>
             </div>
             <div className="max-w-md">
-              <p className="text-xl font-bold text-emerald-400">
-                Your Typing Profile Is Ready!
+              <p className="font-display text-3xl font-medium tracking-tight text-(--color-text)">
+                Your typing profile is ready
               </p>
-              <p className="mt-2 text-xs text-(--color-text-muted) leading-relaxed">
+              <p className="mt-3 text-sm leading-relaxed text-(--color-text-muted)">
                 {lastResult?.training_message ??
-                  "Your 3-classifier ensemble has been trained. You can now use your typing cadence as a 2FA behavioral biometric."}
+                  "Your 3-classifier ensemble has been trained. You can now use your typing cadence as a behavioral second factor."}
               </p>
             </div>
-            <Button size="lg" className="px-8 flex items-center gap-2" onClick={() => navigate("/dashboard")}>
-              <Sparkles size={16} />
-              <span>Continue to Command Dashboard</span>
+            <Button size="lg" onClick={() => navigate("/dashboard")}>
+              <span>Continue to dashboard</span>
               <ArrowRight size={16} />
             </Button>
           </div>
         ) : (
           phrase && (
-            <PhraseTypingBox
-              key={boxKey}
-              phrase={phrase}
-              onComplete={handleComplete}
-              disabled={isSubmitting}
-            />
+            <PhraseTypingBox key={boxKey} phrase={phrase} onComplete={handleComplete} disabled={isSubmitting} />
           )
         )}
 
-        {/* Live Feature Engineering Telemetry Breakdown */}
+        {/* Latest telemetry */}
         {lastResult && !isReady && (
-          <div className="mt-6 pt-5 border-t border-(--color-border)">
-            <div className="mb-3 flex items-center gap-2">
+          <div className="animate-fadeIn mt-7 border-t border-(--color-border) pt-6">
+            <div className="mb-4 flex items-center gap-2">
               <Activity size={14} className="text-(--color-accent)" />
-              <span className="text-xs font-semibold uppercase tracking-wider text-(--color-text-secondary)">
-                Latest Keystroke Telemetry Vectors
+              <span className="text-[11px] font-semibold tracking-[0.14em] text-(--color-text-secondary) uppercase">
+                Latest sample · extracted features
               </span>
             </div>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 text-center">
+            <div className="grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
               <MiniStat
                 icon={Clock}
                 label="Mean Dwell"
@@ -249,13 +239,14 @@ function MiniStat({
   value: string;
 }) {
   return (
-    <div className="rounded-xl border border-(--color-border) bg-(--color-surface-raised)/80 p-3 backdrop-blur-md">
-      <div className="flex items-center justify-center gap-1 text-[10px] font-semibold tracking-wider text-(--color-text-muted) uppercase">
+    <div className="rounded-2xl border border-(--color-border) bg-(--color-bg-subtle) p-3.5 shadow-(--field-shadow)">
+      <div className="flex items-center justify-center gap-1.5 text-[10px] font-semibold tracking-[0.12em] text-(--color-text-muted) uppercase">
         <Icon size={11} className="text-(--color-accent)" />
         <span>{label}</span>
       </div>
-      <p className="mt-1 font-mono-key text-base font-bold text-(--color-text)">{value}</p>
+      <p className="font-display mt-1.5 text-2xl font-medium text-(--color-text) tabular-nums">
+        <AnimatedNumber value={value} />
+      </p>
     </div>
   );
 }
-

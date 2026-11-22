@@ -1,24 +1,29 @@
 import { useEffect, useState, useMemo } from "react";
-import {
-  ShieldCheck,
-  CheckCircle2,
-  XCircle,
-  Download,
-  Activity,
-  History,
-} from "lucide-react";
+import { ShieldCheck, CheckCircle2, XCircle, Download, Activity, History, Check, X } from "lucide-react";
+import { motion } from "motion/react";
+import clsx from "clsx";
 import { Card } from "@/components/Card";
 import { StatTile } from "@/components/StatTile";
 import { Button } from "@/components/Button";
 import { Alert } from "@/components/Alert";
 import { PageLoader } from "@/components/PageLoader";
 import { EmptyState } from "@/components/EmptyState";
+import { PageHeader } from "@/components/PageHeader";
+import { Stagger, StaggerItem } from "@/components/Reveal";
+import { SPRING } from "@/lib/motion";
 import { DecisionBadge, RiskBadge } from "@/components/Badge";
 import { activityApi, friendlyErrorMessage } from "@/services/api";
 import type { ActivityResponse } from "@/types";
 import { MODEL_LABELS } from "@/utils/format";
 
 type FilterMode = "all" | "success" | "failed" | "high_risk";
+
+const FILTERS: { value: FilterMode; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "success", label: "Success" },
+  { value: "failed", label: "Failed" },
+  { value: "high_risk", label: "Anomalies" },
+];
 
 export function SecurityActivity() {
   const [activity, setActivity] = useState<ActivityResponse | null>(null);
@@ -73,112 +78,104 @@ export function SecurityActivity() {
   };
 
   if (error) return <Alert variant="error">{error}</Alert>;
-  if (!activity) return <PageLoader label="Loading tamper-evident security audit feed…" />;
+  if (!activity) return <PageLoader label="Loading your security audit feed…" />;
 
   const totalAttempts = activity.total_success + activity.total_failed;
   const successRate = totalAttempts > 0 ? Math.round((activity.total_success / totalAttempts) * 100) : 0;
 
   return (
     <div className="flex flex-col gap-8">
-      {/* Header */}
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-(--color-text) sm:text-3xl">
-              Security Audit Feed
-            </h1>
-            <span className="inline-flex items-center gap-1 rounded-full border border-(--color-accent)/30 bg-(--color-accent)/10 px-2.5 py-0.5 text-xs font-semibold text-(--color-accent)">
-              <History size={12} />
-              Tamper-Evident Log
-            </span>
-          </div>
-          <p className="mt-1 text-sm text-(--color-text-muted)">
-            Cryptographic and behavioral verification log for every authentication attempt against your identity.
-          </p>
-        </div>
+      <PageHeader
+        badge={
+          <span className="inline-flex items-center gap-2 rounded-full border border-(--color-accent)/30 bg-(--color-accent)/10 px-3 py-1 text-xs font-semibold text-(--color-accent)">
+            <History size={12} />
+            Tamper-evident log
+          </span>
+        }
+        title={
+          <>
+            Security <em className="ember-text pr-1 font-normal">audit</em> feed
+          </>
+        }
+        description="A verification log for every authentication attempt against your identity."
+        actions={
+          <Button variant="secondary" size="sm" onClick={handleExportCSV} disabled={activity.attempts.length === 0}>
+            <Download size={14} />
+            <span>Export audit CSV</span>
+          </Button>
+        }
+      />
 
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={handleExportCSV}
-          disabled={activity.attempts.length === 0}
-          className="flex items-center gap-1.5 self-start sm:self-auto"
-        >
-          <Download size={14} />
-          <span>Export Audit CSV</span>
-        </Button>
-      </div>
-
-      {/* Telemetry Stat Tiles */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-        <StatTile
-          icon={CheckCircle2}
-          accent="emerald"
-          label="Successful Logins"
-          value={activity.total_success}
-          hint="Consensus verified"
-        />
-        <StatTile
-          icon={XCircle}
-          accent="rose"
-          label="Failed Challenges"
-          value={activity.total_failed}
-          hint="Intercepted / rejected"
-        />
-        <StatTile
-          icon={ShieldCheck}
-          accent="cyan"
-          label="Verification Rate"
-          value={totalAttempts > 0 ? `${successRate}%` : "—"}
-          hint={`${totalAttempts} total attempts`}
-        />
-      </div>
+      <Stagger step={0.07} className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <StaggerItem>
+          <StatTile icon={CheckCircle2} accent="emerald" label="Successful Logins" value={activity.total_success} hint="Consensus verified" />
+        </StaggerItem>
+        <StaggerItem>
+          <StatTile icon={XCircle} accent="rose" label="Failed Challenges" value={activity.total_failed} hint="Intercepted / rejected" />
+        </StaggerItem>
+        <StaggerItem className="col-span-2 sm:col-span-1">
+          <StatTile
+            icon={ShieldCheck}
+            accent="ember"
+            label="Verification Rate"
+            value={totalAttempts > 0 ? `${successRate}%` : "—"}
+            hint={`${totalAttempts} total attempts`}
+          />
+        </StaggerItem>
+      </Stagger>
 
       {/* Audit Log Card */}
       <Card
         variant="glow"
         title={
-          <div className="flex items-center gap-2">
-            <Activity size={18} className="text-(--color-accent)" />
+          <div className="flex items-center gap-3">
+            <Activity size={20} className="text-(--color-accent)" />
             <span>Attempt Telemetry History</span>
           </div>
         }
         subtitle="Chronological audit records with millisecond timestamps and multi-factor decision vectors"
         actions={
-          <div className="flex items-center gap-1.5 rounded-xl border border-(--color-border) bg-(--color-surface-raised) p-1 text-xs">
-            <button
-              type="button"
-              onClick={() => setFilter("all")}
-              className={`rounded-lg px-2.5 py-1 font-medium transition-all ${
-                filter === "all"
-                  ? "bg-(--color-accent)/15 text-(--color-accent) font-semibold shadow-xs"
-                  : "text-(--color-text-muted) hover:text-(--color-text)"
-              }`}
-            >
-              All ({activity.attempts.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilter("success")}
-              className={`rounded-lg px-2.5 py-1 font-medium transition-all ${
-                filter === "success"
-                  ? "bg-emerald-500/15 text-emerald-400 font-semibold shadow-xs"
-                  : "text-(--color-text-muted) hover:text-(--color-text)"
-              }`}
-            >
-              Success ({activity.total_success})
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilter("high_risk")}
-              className={`rounded-lg px-2.5 py-1 font-medium transition-all ${
-                filter === "high_risk"
-                  ? "bg-amber-500/15 text-amber-400 font-semibold shadow-xs"
-                  : "text-(--color-text-muted) hover:text-(--color-text)"
-              }`}
-            >
-              Anomalies
-            </button>
+          <div
+            role="tablist"
+            aria-label="Filter attempts"
+            className="flex items-center gap-0.5 rounded-full border border-(--color-border) bg-(--color-bg-subtle) p-0.5 text-xs shadow-(--field-shadow)"
+          >
+            {FILTERS.map(({ value, label }) => {
+              const count =
+                value === "all"
+                  ? activity.attempts.length
+                  : value === "success"
+                    ? activity.total_success
+                    : value === "failed"
+                      ? activity.total_failed
+                      : null;
+              const active = filter === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setFilter(value)}
+                  className={clsx(
+                    "relative cursor-pointer rounded-full px-3 py-1.5 font-medium transition-colors duration-300",
+                    active ? "text-(--color-on-accent)" : "text-(--color-text-muted) hover:text-(--color-text)",
+                  )}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="activity-filter-pill"
+                      transition={SPRING.indicator}
+                      className="absolute inset-0 rounded-full bg-(image:--color-accent-gradient)"
+                    />
+                  )}
+                  <span className="relative">
+                    {label}
+                    {count !== null && ` (${count})`}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         }
       >
@@ -188,33 +185,39 @@ export function SecurityActivity() {
             description="Clear filter or authenticate to generate fresh audit entries."
           />
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-(--color-border) bg-(--color-surface-raised)/60 backdrop-blur-md">
+          <div className="overflow-x-auto max-h-[34rem] overflow-y-auto rounded-2xl border border-(--color-border) bg-(--color-bg-subtle) shadow-(--field-shadow)">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-(--color-border) text-xs font-semibold text-(--color-text-muted) uppercase tracking-wider">
-                  <th className="py-3 px-4">Timestamp</th>
-                  <th className="py-3 px-4">Password State</th>
-                  <th className="py-3 px-4">Biometric Cadence</th>
-                  <th className="py-3 px-4">Ensemble Model</th>
-                  <th className="py-3 px-4">Risk Vector</th>
-                  <th className="py-3 px-4 text-center">Consensus</th>
+                <tr className="sticky top-0 z-10 border-b border-(--color-border) bg-(--color-surface-solid) text-[11px] font-semibold tracking-[0.12em] text-(--color-text-muted) uppercase">
+                  <th className="px-4 py-3.5">Timestamp</th>
+                  <th className="px-4 py-3.5">Password State</th>
+                  <th className="px-4 py-3.5">Biometric Cadence</th>
+                  <th className="px-4 py-3.5">Ensemble Model</th>
+                  <th className="px-4 py-3.5">Risk Vector</th>
+                  <th className="px-4 py-3.5 text-center">Consensus</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-(--color-border) text-xs font-mono">
+              <tbody className="divide-y divide-(--color-border-subtle) font-mono text-xs">
                 {filteredAttempts.map((attempt) => (
                   <tr
                     key={attempt.id}
-                    className="hover:bg-(--color-surface-highlight) transition-colors"
+                    className="transition-colors duration-200 hover:bg-(--color-surface-highlight)"
                   >
-                    <td className="py-3 px-4 whitespace-nowrap text-(--color-text-secondary)">
+                    <td className="px-4 py-3.5 whitespace-nowrap text-(--color-text-secondary)">
                       {new Date(attempt.created_at).toLocaleString()}
                     </td>
-                    <td className="py-3 px-4 font-sans">
-                      <span className={attempt.password_correct ? "text-emerald-400 font-semibold" : "text-rose-400 font-semibold"}>
-                        {attempt.password_correct ? "✓ Correct" : "✗ Incorrect"}
+                    <td className="px-4 py-3.5 font-sans">
+                      <span
+                        className={clsx(
+                          "inline-flex items-center gap-1.5 font-semibold",
+                          attempt.password_correct ? "text-(--color-success)" : "text-(--color-danger)",
+                        )}
+                      >
+                        {attempt.password_correct ? <Check size={13} /> : <X size={13} />}
+                        {attempt.password_correct ? "Correct" : "Incorrect"}
                       </span>
                     </td>
-                    <td className="py-3 px-4 font-sans">
+                    <td className="px-4 py-3.5 font-sans">
                       {attempt.similarity_score !== null ? (
                         <span className="font-semibold text-(--color-text)">
                           {(attempt.similarity_score * 100).toFixed(0)}% Match
@@ -223,13 +226,13 @@ export function SecurityActivity() {
                         <span className="text-(--color-text-muted)">Unscored</span>
                       )}
                     </td>
-                    <td className="py-3 px-4 font-sans text-(--color-text-muted)">
+                    <td className="px-4 py-3.5 font-sans text-(--color-text-muted)">
                       {attempt.method_used ? MODEL_LABELS[attempt.method_used] : "—"}
                     </td>
-                    <td className="py-3 px-4 font-sans">
+                    <td className="px-4 py-3.5 font-sans">
                       <RiskBadge level={attempt.risk_level} />
                     </td>
-                    <td className="py-3 px-4 font-sans text-center">
+                    <td className="px-4 py-3.5 font-sans text-center">
                       <DecisionBadge decision={attempt.decision} />
                     </td>
                   </tr>

@@ -16,6 +16,8 @@ import { StatTile } from "@/components/StatTile";
 import { Button } from "@/components/Button";
 import { Alert } from "@/components/Alert";
 import { PageLoader } from "@/components/PageLoader";
+import { PageHeader } from "@/components/PageHeader";
+import { Stagger, StaggerItem } from "@/components/Reveal";
 import { PhraseTypingBox } from "@/components/PhraseTypingBox";
 import { RiskBadge } from "@/components/Badge";
 import { BiometricRadar } from "@/components/BiometricRadar";
@@ -23,8 +25,28 @@ import { profileApi, typingApi, friendlyErrorMessage } from "@/services/api";
 import type { KeystrokeEvent, ProfileResponse, VerifyPreviewResponse } from "@/types";
 import { MODEL_LABELS } from "@/utils/format";
 
-/** A world-class safe sandbox for viva/presentations: score typing samples against
- * your enrolled profile in real time with instant radar visualizer and simulation modes. */
+const SCENARIOS = [
+  {
+    icon: ShieldCheck,
+    tone: "text-(--color-success)",
+    title: "1. Genuine owner match",
+    body: "Type fluently at your regular cadence. The model should produce high similarity (above 75%) and low risk.",
+  },
+  {
+    icon: ShieldAlert,
+    tone: "text-(--color-danger)",
+    title: "2. Deliberate cadence mismatch",
+    body: "Hunt-and-peck each letter with deliberate 0.5s pauses. Flight times spike, flagging medium or high risk.",
+  },
+  {
+    icon: Activity,
+    tone: "text-(--color-warning)",
+    title: "3. Peer impostor trial",
+    body: "Have a colleague type the phrase on your keyboard. Their natural cadence should diverge from your profile.",
+  },
+];
+
+/** A safe sandbox for demos: score typing samples against your enrolled profile without touching the audit log. */
 export function DemoMode() {
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [result, setResult] = useState<VerifyPreviewResponse | null>(null);
@@ -33,7 +55,10 @@ export function DemoMode() {
   const [boxKey, setBoxKey] = useState(0);
 
   useEffect(() => {
-    profileApi.get().then(setProfile).catch((err) => setError(friendlyErrorMessage(err)));
+    profileApi
+      .get()
+      .then(setProfile)
+      .catch((err) => setError(friendlyErrorMessage(err)));
   }, []);
 
   const handleComplete = useCallback(async (events: KeystrokeEvent[]) => {
@@ -55,46 +80,44 @@ export function DemoMode() {
   }
 
   if (error && !profile) return <Alert variant="error">{error}</Alert>;
-  if (!profile) return <PageLoader label="Initializing live demonstration sandbox…" />;
+  if (!profile) return <PageLoader label="Preparing the demo sandbox…" />;
 
   const notReady = profile.user.typing_profile_status !== "ready";
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* Header */}
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-(--color-text) sm:text-3xl">
-              Live Viva Sandbox
-            </h1>
-            <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-amber-400">
-              <PlaySquare size={12} />
-              Presentation Mode
-            </span>
-          </div>
-          <p className="mt-1 text-sm text-(--color-text-muted)">
-            Instant sandboxed scoring against your enrolled profile without modifying audit histories or requiring credentials.
-          </p>
-        </div>
-      </div>
+    <div className="flex flex-col gap-10">
+      <PageHeader
+        badge={
+          <span className="inline-flex items-center gap-2 rounded-full border border-(--color-warning)/30 bg-(--color-warning)/10 px-3 py-1 text-xs font-semibold text-(--color-warning)">
+            <PlaySquare size={12} />
+            Presentation mode
+          </span>
+        }
+        title={
+          <>
+            Live <em className="ember-text pr-1 font-normal">sandbox</em>
+          </>
+        }
+        description="Instant scoring against your enrolled profile, without modifying audit history or requiring credentials."
+      />
+
+      {error && <Alert variant="error">{error}</Alert>}
 
       {notReady ? (
         <Alert variant="warning">
-          Please complete typing enrollment first — the sandbox requires a calibrated behavioral baseline to score against.
+          Please complete typing enrollment first — the sandbox needs a calibrated behavioral baseline to score against.
         </Alert>
       ) : (
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Active Sandbox Terminal */}
+        <div className="grid gap-5 lg:grid-cols-2">
           <Card
             variant="glow"
             title={
-              <div className="flex items-center gap-2">
-                <Fingerprint size={18} className="text-(--color-accent)" />
-                <span>Live Sample Evaluation</span>
-              </div>
+              <span className="flex items-center gap-3">
+                <Fingerprint size={20} className="text-(--color-accent)" />
+                <span>Live sample evaluation</span>
+              </span>
             }
-            subtitle={!result ? "Type the phrase naturally or test an impostor rhythm" : "Scoring complete"}
+            subtitle={!result ? "Type the phrase naturally, or test an impostor rhythm" : "Scoring complete"}
           >
             {!result ? (
               <PhraseTypingBox
@@ -108,86 +131,75 @@ export function DemoMode() {
             )}
           </Card>
 
-          {/* Imposter vs Authentic Simulation Guide */}
           <Card
             title={
-              <div className="flex items-center gap-2">
-                <Lightbulb size={18} className="text-amber-400" />
-                <span>Viva Demonstration Scenarios</span>
-              </div>
+              <span className="flex items-center gap-3">
+                <Lightbulb size={20} className="text-(--color-warning)" />
+                <span>Demonstration scenarios</span>
+              </span>
             }
-            subtitle="Experiments to showcase live to professors or evaluators"
+            subtitle="Experiments to run live for evaluators"
           >
-            <div className="flex flex-col gap-3 text-xs text-(--color-text-secondary)">
-              <div className="rounded-xl border border-(--color-border) bg-(--color-surface-raised)/70 p-3">
-                <strong className="text-(--color-text) font-semibold flex items-center gap-1.5 mb-1">
-                  <ShieldCheck size={14} className="text-emerald-400" />
-                  1. Genuine Owner Match
-                </strong>
-                <p className="text-(--color-text-muted) leading-relaxed">
-                  Type fluently at your regular typing cadence. The model will produce high similarity (&gt;75%) and low risk.
-                </p>
-              </div>
-
-              <div className="rounded-xl border border-(--color-border) bg-(--color-surface-raised)/70 p-3">
-                <strong className="text-(--color-text) font-semibold flex items-center gap-1.5 mb-1">
-                  <ShieldAlert size={14} className="text-rose-400" />
-                  2. Deliberate Cadence Mismatch (Slow / Hesitant)
-                </strong>
-                <p className="text-(--color-text-muted) leading-relaxed">
-                  Hunt-and-peck each letter with deliberate 0.5s pauses. Flight times will spike, flagging Medium/High Risk.
-                </p>
-              </div>
-
-              <div className="rounded-xl border border-(--color-border) bg-(--color-surface-raised)/70 p-3">
-                <strong className="text-(--color-text) font-semibold flex items-center gap-1.5 mb-1">
-                  <Activity size={14} className="text-amber-400" />
-                  3. Peer Impostor Trial
-                </strong>
-                <p className="text-(--color-text-muted) leading-relaxed">
-                  Have a colleague type the phrase on your keyboard. Their natural cadence will diverge from your vector weights.
-                </p>
-              </div>
+            <div className="flex flex-col gap-3">
+              {SCENARIOS.map(({ icon: Icon, tone, title, body }) => (
+                <div
+                  key={title}
+                  className="rounded-2xl border border-(--color-border) bg-(--color-bg-subtle) p-4 shadow-(--field-shadow)"
+                >
+                  <strong className="mb-1.5 flex items-center gap-2 text-sm font-semibold text-(--color-text)">
+                    <Icon size={15} className={tone} />
+                    {title}
+                  </strong>
+                  <p className="text-xs leading-relaxed text-(--color-text-muted)">{body}</p>
+                </div>
+              ))}
             </div>
           </Card>
         </div>
       )}
 
-      {/* Model Telemetry Snapshot */}
       <Card
         title={
-          <div className="flex items-center gap-2">
-            <Cpu size={18} className="text-(--color-accent)" />
-            <span>Target Model Architecture</span>
-          </div>
+          <span className="flex items-center gap-3">
+            <Cpu size={20} className="text-(--color-accent)" />
+            <span>Target model architecture</span>
+          </span>
         }
       >
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <StatTile
-            icon={Fingerprint}
-            accent="emerald"
-            label="Enrolled State"
-            value={profile.user.typing_profile_status.replace("_", " ")}
-          />
-          <StatTile
-            icon={Layers}
-            accent="cyan"
-            label="Baseline Samples"
-            value={`${profile.samples_collected} / ${profile.min_required}`}
-          />
-          <StatTile
-            icon={Cpu}
-            accent="violet"
-            label="Active Classifier"
-            value={profile.active_model ? MODEL_LABELS[profile.active_model.model_type] : "Baseline"}
-          />
-          <StatTile
-            icon={Sparkles}
-            accent="emerald"
-            label="Ensemble F1 Score"
-            value={profile.active_model ? `${(profile.active_model.f1_score * 100).toFixed(1)}%` : "—"}
-          />
-        </div>
+        <Stagger step={0.07} className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <StaggerItem>
+            <StatTile
+              icon={Fingerprint}
+              accent="emerald"
+              label="Enrolled State"
+              value={profile.user.typing_profile_status.replace("_", " ")}
+            />
+          </StaggerItem>
+          <StaggerItem>
+            <StatTile
+              icon={Layers}
+              accent="ember"
+              label="Baseline Samples"
+              value={`${profile.samples_collected} / ${profile.min_required}`}
+            />
+          </StaggerItem>
+          <StaggerItem>
+            <StatTile
+              icon={Cpu}
+              accent="ember"
+              label="Active Classifier"
+              value={profile.active_model ? MODEL_LABELS[profile.active_model.model_type] : "Baseline"}
+            />
+          </StaggerItem>
+          <StaggerItem>
+            <StatTile
+              icon={Sparkles}
+              accent="emerald"
+              label="Ensemble F1 Score"
+              value={profile.active_model ? `${(profile.active_model.f1_score * 100).toFixed(1)}%` : "—"}
+            />
+          </StaggerItem>
+        </Stagger>
       </Card>
     </div>
   );
@@ -196,7 +208,7 @@ export function DemoMode() {
 function ResultPanel({ result, onReset }: { result: VerifyPreviewResponse; onReset: () => void }) {
   const riskLevel = result.match ? "low" : result.similarity_score >= 0.4 ? "medium" : "high";
   return (
-    <div className="flex flex-col items-center gap-4 py-4 text-center animate-fadeIn">
+    <div className="animate-fadeIn flex flex-col items-center gap-5 py-4 text-center">
       <BiometricRadar
         score={result.similarity_score}
         riskLevel={riskLevel}
@@ -204,11 +216,9 @@ function ResultPanel({ result, onReset }: { result: VerifyPreviewResponse; onRes
         label={`Scored via ${MODEL_LABELS[result.method_used]}`}
       />
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <RiskBadge level={riskLevel} />
-        <span className="font-semibold text-sm text-(--color-text)">
-          {result.similarity_label}
-        </span>
+        <span className="text-sm font-semibold text-(--color-text)">{result.similarity_label}</span>
       </div>
 
       <p className="max-w-sm text-xs leading-relaxed text-(--color-text-muted)">
@@ -217,11 +227,10 @@ function ResultPanel({ result, onReset }: { result: VerifyPreviewResponse; onRes
           : "Cadence vectors exceed normal variance boundaries — flagged as an impostor anomaly."}
       </p>
 
-      <Button variant="secondary" size="sm" onClick={onReset} className="flex items-center gap-1.5 mt-2">
+      <Button variant="secondary" size="sm" onClick={onReset} className="mt-2">
         <RefreshCw size={13} />
-        <span>Evaluate Another Sample</span>
+        <span>Evaluate another sample</span>
       </Button>
     </div>
   );
 }
-

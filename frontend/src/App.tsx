@@ -1,15 +1,18 @@
+import { lazy } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "@/layouts/AppLayout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Landing } from "@/pages/Landing";
 import { Register } from "@/pages/Register";
 import { Login } from "@/pages/Login";
-import { Enroll } from "@/pages/Enroll";
-import { Dashboard } from "@/pages/Dashboard";
-import { MLAnalytics } from "@/pages/MLAnalytics";
-import { SecurityActivity } from "@/pages/SecurityActivity";
-import { DemoMode } from "@/pages/DemoMode";
 import { NotFound } from "@/pages/NotFound";
+
+// Authenticated pages are code-split so the landing page stays light (recharts only loads with analytics).
+const Enroll = lazy(() => import("@/pages/Enroll").then((m) => ({ default: m.Enroll })));
+const Dashboard = lazy(() => import("@/pages/Dashboard").then((m) => ({ default: m.Dashboard })));
+const MLAnalytics = lazy(() => import("@/pages/MLAnalytics").then((m) => ({ default: m.MLAnalytics })));
+const SecurityActivity = lazy(() => import("@/pages/SecurityActivity").then((m) => ({ default: m.SecurityActivity })));
+const DemoMode = lazy(() => import("@/pages/DemoMode").then((m) => ({ default: m.DemoMode })));
 
 export default function App() {
   return (
