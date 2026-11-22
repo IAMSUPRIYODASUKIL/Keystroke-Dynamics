@@ -1,32 +1,25 @@
-import { Fingerprint } from "lucide-react";
+import { CadenceTrace } from "@/components/CadenceTrace";
 
 export function PageLoader({ label = "Processing biometric telemetry…" }: { label?: string }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-24 text-(--color-text-muted) select-none">
-      <div className="relative flex h-16 w-16 items-center justify-center">
-        {/* Pulsing ambient glow */}
-        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(0,242,254,0.3)_0%,transparent_70%)] animate-ping opacity-30" />
-        
-        {/* Orbital rings */}
-        <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-(--color-accent) border-r-(--color-accent-secondary) animate-spin" />
+    <div
+      role="status"
+      aria-live="polite"
+      className="flex flex-col items-center justify-center gap-6 py-28 text-(--color-text-muted) select-none"
+    >
+      <div className="relative h-16 w-64">
         <div
-          className="absolute inset-2 rounded-full border-2 border-transparent border-b-emerald-400 border-l-(--color-accent) animate-spin"
-          style={{ animationDirection: "reverse", animationDuration: "1.5s" }}
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--color-accent)_26%,transparent),transparent)] blur-xl"
         />
-
-        {/* Center Fingerprint icon */}
-        <Fingerprint size={22} className="text-(--color-accent) animate-pulse" />
+        <CadenceTrace seed={11} points={22} className="h-full w-full" />
       </div>
-
-      <div className="flex flex-col items-center gap-1">
-        <p className="text-sm font-medium tracking-wide text-(--color-text)">
-          {label}
-        </p>
-        <span className="text-[11px] font-mono uppercase tracking-widest text-(--color-text-muted)">
-          Keystroke Pipeline v2.6
+      <div className="flex flex-col items-center gap-1.5">
+        <p className="font-display text-lg font-medium tracking-tight text-(--color-text)">{label}</p>
+        <span className="font-mono text-[10px] tracking-[0.2em] text-(--color-text-dim) uppercase">
+          Keystroke pipeline
         </span>
       </div>
     </div>
   );
 }
-

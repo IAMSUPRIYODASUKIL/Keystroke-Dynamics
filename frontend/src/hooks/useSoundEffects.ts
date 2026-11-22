@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 
 const STORAGE_KEY = "keystroke_auth_sound_enabled";
 
@@ -19,26 +19,44 @@ function getAudioContext(): AudioContext | null {
   return audioCtx;
 }
 
-export function useSoundEffects() {
-  const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved !== null ? saved === "true" : true;
-    } catch {
-      return true;
-    }
-  });
+// Shared store: every hook instance (navbar toggle, typing box, ...) sees the same value.
+let soundEnabledState: boolean = (() => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved !== null ? saved === "true" : true;
+  } catch {
+    return true;
+  }
+})();
+const listeners = new Set<() => void>();
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, String(soundEnabled));
-    } catch {
-      // ignore
-    }
-  }, [soundEnabled]);
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function getSnapshot() {
+  return soundEnabledState;
+}
+
+function setSoundEnabledShared(next: boolean) {
+  if (next === soundEnabledState) return;
+  soundEnabledState = next;
+  try {
+    localStorage.setItem(STORAGE_KEY, String(next));
+  } catch {
+    // ignore
+  }
+  listeners.forEach((listener) => listener());
+}
+
+export function useSoundEffects() {
+  const soundEnabled = useSyncExternalStore(subscribe, getSnapshot, () => true);
 
   const toggleSound = useCallback(() => {
-    setSoundEnabled((prev) => !prev);
+    setSoundEnabledShared(!soundEnabledState);
   }, []);
 
   const playKeyClick = useCallback(() => {

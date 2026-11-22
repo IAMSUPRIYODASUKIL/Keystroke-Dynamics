@@ -10,42 +10,46 @@ interface AlertProps {
 
 const CONFIG = {
   error: {
-    style: "border-rose-500/30 bg-rose-500/10 text-rose-300 dark:text-rose-200 shadow-[0_0_15px_rgba(244,63,94,0.1)]",
+    style: "border-(--color-danger)/35 bg-(--color-danger)/10",
     icon: AlertCircle,
-    iconColor: "text-rose-400",
+    iconColor: "text-(--color-danger)",
+    rail: "bg-(--color-danger)",
   },
   success: {
-    style: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300 dark:text-emerald-200 shadow-[0_0_15px_rgba(16,185,129,0.1)]",
+    style: "border-(--color-success)/35 bg-(--color-success)/10",
     icon: CheckCircle2,
-    iconColor: "text-emerald-400",
+    iconColor: "text-(--color-success)",
+    rail: "bg-(--color-success)",
   },
   warning: {
-    style: "border-amber-500/30 bg-amber-500/10 text-amber-300 dark:text-amber-200 shadow-[0_0_15px_rgba(245,158,11,0.1)]",
+    style: "border-(--color-warning)/35 bg-(--color-warning)/10",
     icon: AlertTriangle,
-    iconColor: "text-amber-400",
+    iconColor: "text-(--color-warning)",
+    rail: "bg-(--color-warning)",
   },
   info: {
-    style: "border-cyan-500/30 bg-cyan-500/10 text-cyan-300 dark:text-cyan-200 shadow-[0_0_15px_rgba(0,242,254,0.1)]",
+    style: "border-(--color-accent)/30 bg-(--color-accent)/8",
     icon: Info,
     iconColor: "text-(--color-accent)",
+    rail: "bg-(--color-accent)",
   },
 };
 
 export function Alert({ variant, children, className }: AlertProps) {
-  const { style, icon: Icon, iconColor } = CONFIG[variant];
+  const { style, icon: Icon, iconColor, rail } = CONFIG[variant];
 
   return (
     <div
       role={variant === "error" ? "alert" : "status"}
       className={clsx(
-        "relative flex items-start gap-3 rounded-xl border p-4 text-sm font-medium backdrop-blur-xl transition-all duration-200",
+        "animate-fadeIn relative flex items-start gap-3 overflow-hidden rounded-2xl border py-3.5 pr-4 pl-5 text-sm text-(--color-text)",
         style,
         className,
       )}
     >
-      <Icon size={18} className={clsx("shrink-0 mt-0.5", iconColor)} />
-      <div className="flex-1 leading-relaxed text-left">{children}</div>
+      <span aria-hidden="true" className={clsx("absolute inset-y-0 left-0 w-1", rail)} />
+      <Icon size={18} className={clsx("mt-0.5 shrink-0", iconColor)} />
+      <div className="flex-1 text-left leading-relaxed">{children}</div>
     </div>
   );
 }
-

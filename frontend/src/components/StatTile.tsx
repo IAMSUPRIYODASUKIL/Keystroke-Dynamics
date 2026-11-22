@@ -1,109 +1,84 @@
 import type { ComponentType, ReactNode } from "react";
 import clsx from "clsx";
+import { AnimatedNumber } from "@/components/AnimatedNumber";
 
 interface StatTileProps {
   label: string;
   value: ReactNode;
   hint?: string;
   icon?: ComponentType<{ size?: number; className?: string }>;
-  accent?: "cyan" | "emerald" | "violet" | "amber" | "rose" | "neutral";
+  /** `cyan`, `violet` and `ember` are legacy names that all map to the ember accent family. */
+  accent?: "ember" | "cyan" | "emerald" | "violet" | "amber" | "rose" | "neutral";
   className?: string;
 }
 
-export function StatTile({
-  label,
-  value,
-  hint,
-  icon: Icon,
-  accent = "cyan",
-  className,
-}: StatTileProps) {
-  const accentStyles = {
-    cyan: {
-      border: "hover:border-(--color-accent)/50",
-      glow: "from-(--color-accent)/10 to-transparent",
-      iconBg: "bg-(--color-accent)/10 text-(--color-accent) border-(--color-accent)/20",
-      dot: "bg-(--color-accent)",
-    },
-    emerald: {
-      border: "hover:border-emerald-500/50",
-      glow: "from-emerald-500/10 to-transparent",
-      iconBg: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-      dot: "bg-emerald-400",
-    },
-    violet: {
-      border: "hover:border-purple-500/50",
-      glow: "from-purple-500/10 to-transparent",
-      iconBg: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-      dot: "bg-purple-400",
-    },
-    amber: {
-      border: "hover:border-amber-500/50",
-      glow: "from-amber-500/10 to-transparent",
-      iconBg: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-      dot: "bg-amber-400",
-    },
-    rose: {
-      border: "hover:border-rose-500/50",
-      glow: "from-rose-500/10 to-transparent",
-      iconBg: "bg-rose-500/10 text-rose-400 border-rose-500/20",
-      dot: "bg-rose-400",
-    },
-    neutral: {
-      border: "hover:border-(--color-border-glow)",
-      glow: "from-(--color-surface-highlight) to-transparent",
-      iconBg: "bg-(--color-surface-highlight) text-(--color-text-muted) border-(--color-border)",
-      dot: "bg-(--color-text-muted)",
-    },
-  }[accent];
+const ACCENTS = {
+  ember: {
+    glow: "from-(--color-accent)/25",
+    icon: "bg-(--color-accent)/12 text-(--color-accent) border-(--color-accent)/25",
+    dot: "bg-(--color-accent)",
+  },
+  emerald: {
+    glow: "from-(--color-success)/25",
+    icon: "bg-(--color-success)/12 text-(--color-success) border-(--color-success)/25",
+    dot: "bg-(--color-success)",
+  },
+  amber: {
+    glow: "from-(--color-warning)/25",
+    icon: "bg-(--color-warning)/12 text-(--color-warning) border-(--color-warning)/25",
+    dot: "bg-(--color-warning)",
+  },
+  rose: {
+    glow: "from-(--color-danger)/25",
+    icon: "bg-(--color-danger)/12 text-(--color-danger) border-(--color-danger)/25",
+    dot: "bg-(--color-danger)",
+  },
+  neutral: {
+    glow: "from-(--color-text-muted)/15",
+    icon: "bg-(--color-surface-highlight) text-(--color-text-muted) border-(--color-border)",
+    dot: "bg-(--color-text-muted)",
+  },
+};
+
+export function StatTile({ label, value, hint, icon: Icon, accent = "ember", className }: StatTileProps) {
+  const key = accent === "cyan" || accent === "violet" ? "ember" : accent;
+  const styles = ACCENTS[key];
 
   return (
     <div
       className={clsx(
-        "group relative overflow-hidden rounded-2xl border border-(--color-border) bg-(--color-surface)/80 p-5 backdrop-blur-xl transition-all duration-300 hover:shadow-lg",
-        accentStyles.border,
+        "glass-card spotlight group relative overflow-hidden rounded-3xl border border-(--color-border) bg-(--color-surface) p-5 sm:p-6",
+        "hover:-translate-y-0.5 hover:border-(--color-border-glow)",
         className,
       )}
     >
-      {/* Background Gradient Mesh */}
       <div
+        aria-hidden="true"
         className={clsx(
-          "pointer-events-none absolute -top-10 -right-10 h-32 w-32 rounded-full bg-linear-to-br opacity-50 blur-2xl transition-opacity duration-300 group-hover:opacity-100",
-          accentStyles.glow,
+          "pointer-events-none absolute -top-12 -right-12 h-36 w-36 rounded-full bg-linear-to-br to-transparent opacity-60 blur-2xl transition-opacity duration-500 group-hover:opacity-100",
+          styles.glow,
         )}
       />
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <span className={clsx("h-1.5 w-1.5 rounded-full", accentStyles.dot)} />
-          <p className="text-[11px] font-semibold tracking-wider text-(--color-text-muted) uppercase">
+          <span className={clsx("h-1.5 w-1.5 rounded-full", styles.dot)} />
+          <p className="text-[11px] font-semibold tracking-[0.14em] text-(--color-text-muted) uppercase">
             {label}
           </p>
         </div>
         {Icon && (
-          <div
-            className={clsx(
-              "flex h-7 w-7 items-center justify-center rounded-lg border",
-              accentStyles.iconBg,
-            )}
-          >
-            <Icon size={14} />
+          <div className={clsx("flex h-8 w-8 items-center justify-center rounded-xl border", styles.icon)}>
+            <Icon size={15} />
           </div>
         )}
       </div>
 
-      <div className="mt-3 flex items-baseline justify-between">
-        <p className="font-mono-key text-2xl font-bold tracking-tight text-(--color-text) sm:text-3xl">
-          {value}
-        </p>
-      </div>
+      <p className="font-display mt-4 text-4xl font-medium tracking-tight text-(--color-text) tabular-nums sm:text-[2.75rem] sm:leading-none">
+        {typeof value === "string" || typeof value === "number" ? <AnimatedNumber value={value} /> : value}
+      </p>
 
-      {hint && (
-        <p className="mt-2 text-xs font-medium text-(--color-text-muted)">
-          {hint}
-        </p>
-      )}
+      {hint && <p className="mt-3 text-xs leading-relaxed font-medium text-(--color-text-muted)">{hint}</p>}
     </div>
   );
 }
-

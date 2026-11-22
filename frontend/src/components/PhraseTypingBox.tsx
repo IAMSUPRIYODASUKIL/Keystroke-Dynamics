@@ -1,8 +1,9 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import clsx from "clsx";
 import { Keyboard, CheckCircle2, AlertOctagon, Sparkles, Activity } from "lucide-react";
 import { useKeystrokeCapture } from "@/hooks/useKeystrokeCapture";
 import { useSoundEffects } from "@/hooks/useSoundEffects";
+import { Keycap, type KeycapState } from "@/components/Keycap";
 import type { KeystrokeEvent } from "@/types";
 
 interface PhraseTypingBoxProps {
@@ -10,94 +11,117 @@ interface PhraseTypingBoxProps {
   onComplete: (events: KeystrokeEvent[]) => void;
   disabled?: boolean;
   resetSignal?: number;
+  /** Optional hook for visualisations that react to live typing (does not affect capture). */
+  onActivity?: (typedLength: number) => void;
 }
 
-/** The world-class "type the phrase" biometric capture terminal.
- * Renders the phrase with holographic per-character feedback, live rhythm
- * waveform visualization, and audio-tactile haptic feedback. */
-export function PhraseTypingBox({ phrase, onComplete, disabled = false }: PhraseTypingBoxProps) {
+const IDLE_WAVE = [15, 20, 25, 30, 20, 15, 25, 30, 20, 15, 20, 25];
+
+/**
+ * The "type the phrase" biometric capture surface, rendered as a row of physical keycaps.
+ * Visual layer only: all timing capture lives in useKeystrokeCapture.
+ */
+export function PhraseTypingBox({ phrase, onComplete, disabled = false, onActivity }: PhraseTypingBoxProps) {
   const [isFocused, setIsFocused] = useState(false);
-  const [waveActivity, setWaveActivity] = useState<number[]>([15, 25, 40, 60, 30, 20, 45, 70, 35, 20]);
+  const [waveActivity, setWaveActivity] = useState<number[]>(IDLE_WAVE);
   const containerRef = useRef<HTMLDivElement>(null);
   const descriptionId = useId();
   const { playKeyClick, playSuccessChime, playMismatchTone } = useSoundEffects();
 
-  const { typed, isComplete, hasMismatch, progress, handleKeyDown: rawKeyDown, handleKeyUp } = useKeystrokeCapture({
-    phrase,
-    onComplete,
-    disabled,
-  });
+  const {
+    typed,
+    isComplete,
+    hasMismatch,
+    progress,
+    handleKeyDown: rawKeyDown,
+    handleKeyUp,
+  } = useKeystrokeCapture({ phrase, onComplete, disabled });
 
-  // Sound triggers & rhythm wave modulation on keypress
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (disabled) return;
     if (e.key.length === 1 || e.key === "Backspace" || e.key === "Enter") {
       playKeyClick();
-      // Modulate rhythm waves randomly on keypress
-      setWaveActivity(
-        Array.from({ length: 12 }, () => Math.floor(Math.random() * 75) + 25),
-      );
+      setWaveActivity(Array.from({ length: 12 }, () => Math.floor(Math.random() * 75) + 25));
     }
     rawKeyDown(e);
   };
 
   useEffect(() => {
-    if (hasMismatch) {
-      playMismatchTone();
-    }
+    if (hasMismatch) playMismatchTone();
   }, [hasMismatch, playMismatchTone]);
 
   useEffect(() => {
-    if (isComplete) {
-      playSuccessChime();
-    }
+    if (isComplete) playSuccessChime();
   }, [isComplete, playSuccessChime]);
 
-  // Settle waveform when idle
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setWaveActivity([15, 20, 25, 30, 20, 15, 25, 30, 20, 15, 20, 25]);
-    }, 300);
+    onActivity?.(typed.length);
+  }, [typed.length, onActivity]);
+
+  // Settle the waveform when typing pauses
+  useEffect(() => {
+    const timer = setTimeout(() => setWaveActivity(IDLE_WAVE), 300);
     return () => clearTimeout(timer);
   }, [typed]);
 
+  // Group characters into words (each word keeps its trailing space) so lines wrap between words.
+  const groups = useMemo(() => {
+    const result: { start: number; text: string }[] = [];
+    let start = 0;
+    phrase.split(" ").forEach((word, i, all) => {
+      const text = i < all.length - 1 ? `${word} ` : word;
+      result.push({ start, text });
+      start += text.length;
+    });
+    return result;
+  }, [phrase]);
+
+  const stateAt = (index: number): KeycapState =>
+    hasMismatch && index === typed.length
+      ? "error"
+      : index < typed.length
+        ? "done"
+        : index === typed.length
+          ? "current"
+          : "pending";
+
   return (
-    <div className="flex flex-col gap-3">
-      {/* Real-Time Cadence & Rhythm Frequency Visualizer Header */}
+    <div className="flex flex-col gap-4">
+      {/* Rhythm stream header */}
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-2">
-          <span className="flex h-2 w-2 rounded-full bg-(--color-accent) animate-pulse" />
-          <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-(--color-text-secondary) flex items-center gap-1.5">
+          <span className={clsx("flex h-2 w-2 rounded-full bg-(--color-accent)", isFocused && "animate-pulse-ring")} />
+          <span className="flex items-center gap-1.5 font-mono text-[11px] font-semibold tracking-[0.16em] text-(--color-text-secondary) uppercase">
             <Activity size={13} className="text-(--color-accent)" />
-            Biometric Rhythm Stream
+            Rhythm stream
           </span>
         </div>
 
-        {/* Dynamic Mini Waveform Bars */}
-        <div className="flex items-center gap-1 h-4">
+        <div className="flex h-5 items-center gap-1" aria-hidden="true">
           {waveActivity.map((height, i) => (
             <div
               key={i}
               className={clsx(
-                "w-1 rounded-full transition-all duration-150",
+                "w-1 origin-center rounded-full transition-transform duration-150",
                 hasMismatch
-                  ? "bg-rose-500"
+                  ? "bg-(--color-danger)"
                   : isComplete
-                    ? "bg-emerald-400"
+                    ? "bg-(--color-success)"
                     : isFocused
                       ? "bg-(--color-accent)"
                       : "bg-(--color-border)",
               )}
               style={{
-                height: isFocused ? `${Math.max(4, (height / 100) * 16)}px` : "4px",
-                opacity: isFocused ? 0.9 : 0.4,
+                height: 20,
+                transform: `scaleY(${isFocused ? Math.max(0.2, height / 100) : 0.2})`,
+                opacity: isFocused ? 0.95 : 0.45,
               }}
             />
           ))}
         </div>
       </div>
 
-      {/* Main Holographic Biometric Terminal Box */}
+      {/* Keycap capture surface */}
       <div
         ref={containerRef}
         role="textbox"
@@ -111,46 +135,34 @@ export function PhraseTypingBox({ phrase, onComplete, disabled = false }: Phrase
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         className={clsx(
-          "font-mono-key relative w-full rounded-2xl border-2 px-6 py-8 text-lg leading-relaxed tracking-wider transition-all duration-200 select-none sm:text-xl md:text-2xl backdrop-blur-2xl cursor-text shadow-xl",
-          "focus:outline-none",
+          "relative w-full cursor-text overflow-hidden rounded-3xl border px-4 py-9 select-none sm:px-8 sm:py-11",
+          "transition-[border-color,box-shadow,background-color] duration-500 ease-(--ease-premium) focus:outline-none",
           disabled && "cursor-not-allowed opacity-50",
           hasMismatch
-            ? "border-rose-500/80 bg-rose-500/10 shadow-[0_0_30px_rgba(244,63,94,0.2)] animate-shake"
+            ? "animate-shake border-(--color-danger)/70 bg-(--color-danger)/8 shadow-[0_0_48px_-14px_var(--color-danger)]"
             : isComplete
-              ? "border-emerald-500/80 bg-emerald-500/10 shadow-[0_0_30px_rgba(16,185,129,0.2)]"
+              ? "border-(--color-success)/60 bg-(--color-success)/8 shadow-[0_0_48px_-14px_var(--color-success)]"
               : isFocused
-                ? "border-(--color-accent) bg-(--color-surface-solid)/90 shadow-[0_0_35px_rgba(0,242,254,0.25)]"
-                : "border-(--color-border) bg-(--color-surface) hover:border-(--color-border-glow)",
+                ? "border-(--color-accent)/70 bg-(--color-surface-solid) shadow-[var(--field-shadow),0_0_64px_-20px_var(--color-accent)]"
+                : "border-(--color-border) bg-(--color-bg-subtle) shadow-(--field-shadow) hover:border-(--color-border-glow)/60",
         )}
       >
-        {/* Specular Terminal Top Rim */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-(--color-accent)/50 to-transparent opacity-70 rounded-t-2xl" />
+        <div className="pointer-events-none absolute inset-x-10 top-0 h-px bg-linear-to-r from-transparent via-(--color-accent)/50 to-transparent" />
 
-        {phrase.split("").map((char, index) => {
-          const state = index < typed.length ? "done" : index === typed.length ? "current" : "pending";
-          return (
-            <span
-              key={index}
-              className={clsx(
-                "relative inline-block transition-colors duration-100",
-                state === "done" && "text-emerald-400 font-semibold drop-shadow-[0_0_8px_rgba(16,185,129,0.5)]",
-                state === "pending" && "text-(--color-text-dim) dark:text-slate-600",
-                state === "current" && isFocused && !hasMismatch && "text-(--color-text) font-bold",
-              )}
-            >
-              {/* Futuristic Cyber Caret */}
-              {state === "current" && isFocused && !hasMismatch && (
-                <span className="absolute -left-0.5 bottom-0 inline-block h-[1.25em] w-0.75 rounded-full bg-(--color-accent) animate-cyber-caret shadow-[0_0_10px_var(--color-accent)]" />
-              )}
-              {char === " " ? " " : char}
-            </span>
-          );
-        })}
+        <div className="flex flex-wrap justify-center gap-x-2 gap-y-4 sm:gap-x-3 sm:gap-y-5">
+          {groups.map((group) => (
+            <div key={group.start} className="flex gap-1.5 sm:gap-2">
+              {group.text.split("").map((char, offset) => {
+                const index = group.start + offset;
+                return <Keycap key={index} char={char} state={stateAt(index)} focused={isFocused} />;
+              })}
+            </div>
+          ))}
+        </div>
 
-        {/* Unfocused Click Prompt Overlay */}
         {!isFocused && !isComplete && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-(--color-bg)/80 backdrop-blur-sm text-sm font-sans font-medium text-(--color-text-muted) cursor-pointer">
-            <span className="flex items-center gap-2 rounded-full border border-(--color-border) bg-(--color-surface-raised) px-4 py-2 text-xs font-semibold text-(--color-text) shadow-lg hover:border-(--color-accent) hover:text-(--color-accent) transition-all">
+          <div className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-3xl bg-(--color-bg)/70 backdrop-blur-[3px]">
+            <span className="flex items-center gap-2.5 rounded-full border border-(--color-border) bg-(--color-surface-raised) px-5 py-2.5 text-xs font-semibold text-(--color-text) shadow-(--card-shadow) transition-colors hover:border-(--color-accent) hover:text-(--color-accent)">
               <Keyboard size={15} className="text-(--color-accent)" />
               Click here to focus and type the phrase
             </span>
@@ -162,33 +174,31 @@ export function PhraseTypingBox({ phrase, onComplete, disabled = false }: Phrase
         Type the displayed phrase exactly, without corrections. Pressing Backspace restarts the sample.
       </p>
 
-      {/* Holographic Progress Track */}
+      {/* Progress */}
       <div className="flex items-center gap-3 px-1">
-        <div className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-border) p-0.5">
+        <div className="h-2 flex-1 overflow-hidden rounded-full bg-(--color-border) shadow-(--field-shadow)">
           <div
             className={clsx(
-              "h-full rounded-full transition-all duration-150 shadow-sm",
-              hasMismatch
-                ? "bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.6)]"
-                : "bg-linear-to-r from-(--color-accent) via-teal-400 to-emerald-400 shadow-[0_0_10px_rgba(0,242,254,0.6)]",
+              "h-full w-full origin-left rounded-full transition-transform duration-200 ease-(--ease-premium)",
+              hasMismatch ? "bg-(--color-danger)" : "bg-(image:--color-ember-gradient)",
             )}
-            style={{ width: `${Math.round(progress * 100)}%` }}
+            style={{ transform: `scaleX(${progress})` }}
           />
         </div>
-        <span className="shrink-0 font-mono text-xs font-semibold text-(--color-text-muted)">
-          {typed.length} / {phrase.length} ({Math.round(progress * 100)}%)
+        <span className="shrink-0 font-mono text-xs font-semibold text-(--color-text-muted) tabular-nums">
+          {typed.length} / {phrase.length}
         </span>
       </div>
 
-      {/* Dynamic Status Feedback Message */}
-      <div className="flex items-center justify-between min-h-6 px-1 text-xs font-medium" aria-live="polite">
+      {/* Status */}
+      <div className="flex min-h-6 items-center justify-between px-1 text-xs font-medium" aria-live="polite">
         {hasMismatch ? (
-          <span className="flex items-center gap-1.5 text-rose-400 animate-fadeIn">
+          <span className="animate-fadeIn flex items-center gap-1.5 text-(--color-danger)">
             <AlertOctagon size={14} />
             Cadence interrupted — resetting sample for pure rhythm integrity…
           </span>
         ) : isComplete ? (
-          <span className="flex items-center gap-1.5 text-emerald-400 font-semibold animate-fadeIn">
+          <span className="animate-fadeIn flex items-center gap-1.5 font-semibold text-(--color-success)">
             <CheckCircle2 size={14} />
             Biometric sample captured successfully.
           </span>
@@ -202,4 +212,3 @@ export function PhraseTypingBox({ phrase, onComplete, disabled = false }: Phrase
     </div>
   );
 }
-
